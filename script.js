@@ -11,7 +11,7 @@ async function getResponse() {
     {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ inputs: input })
@@ -26,3 +26,4 @@ async function getResponse() {
     responseBox.innerHTML = "🤖 Ayush's AI says: " + result[0].generated_text;
   }
 }
+
