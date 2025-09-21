@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush's AI</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Side blobs -->
@@ -14,13 +15,16 @@
   <div class="blob right"></div>
 
   <div class="container">
-    <h1>Welcome to Ayush's AI</h1>
+    <h1 class="title">Welcome to Ayush's AI</h1>
     <p class="subtitle">By Ayush Padaruth</p>
 
     <textarea id="userInput" placeholder="Type a message..."></textarea>
     <button class="play" onclick="getResponse()">Send</button>
 
-    <div id="responseBox"></div>
+    <div id="responseContainer">
+      <p class="aiName">🤖 Ayush's AI:</p>
+      <div id="responseBox"></div>
+    </div>
 
     <div class="about">
       <h2>About Me</h2>
@@ -31,3 +35,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
