@@ -37,13 +37,14 @@ function sendMessage() {
 function getAIResponse(input) {
   if (input.includes("hello")) return "Hello there! 👋 Welcome to Ayush’s AI..";
   if (input.includes("how are you")) return "I'm doing great, thanks for asking! 😃";
-  if (input.includes("bye")) return "Goodbye Ayush! 👋";
+  if (input.includes("bye")) return "Goodbye! 👋";
   if (input.includes("who made you")) return "I was created by Ayush Padaruth, the legend himself! 🚀";
   if (input.includes("joke")) return "Why did the computer show up at work late? It had a hard drive! 😆";
   if (input.includes("do you know joshua martin")) return "Ah, Joshua Martin? Of course I know him! That guy is basically a legend in the F1 world of everyday life. 🏎️💨 He probably treats his breakfast like a pit stop, his homework like a Grand Prix, and his weekend like the championship race itself. Honestly, if he ever got behind the wheel of an actual F1 car, I’d bet he’d try to drift around every corner while cheering for his favorite driver at the same time! 😂";
   if (input.includes("josh") && input.includes("f1")) return "Ah, Josh loves F1? No wonder he’s always racing to finish his homework! 🏎️💨😂";
   return "Hmm 🤔 I don’t know that yet. Ayush can teach me more!";
 }
+
 
 
 
