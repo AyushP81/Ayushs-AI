@@ -35,7 +35,7 @@ function sendMessage() {
 }
 
 function getAIResponse(input) {
-  if (input.includes("hello")) return "Hey Ayush! 👋 Welcome to your AI.";
+  if (input.includes("hello")) return "Hello there! 👋 Welcome to Ayush’s AI..";
   if (input.includes("how are you")) return "I'm doing great, thanks for asking! 😃";
   if (input.includes("bye")) return "Goodbye Ayush! 👋";
   if (input.includes("who made you")) return "I was created by Ayush Padaruth, the legend himself! 🚀";
@@ -44,6 +44,7 @@ function getAIResponse(input) {
   if (input.includes("josh") && input.includes("f1")) return "Ah, Josh loves F1? No wonder he’s always racing to finish his homework! 🏎️💨😂";
   return "Hmm 🤔 I don’t know that yet. Ayush can teach me more!";
 }
+
 
 
 
