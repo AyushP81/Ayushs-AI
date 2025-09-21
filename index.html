@@ -18,14 +18,14 @@
     <h1 class="title">Welcome to Ayush's AI</h1>
     <p class="subtitle">By Ayush Padaruth</p>
 
-    <textarea id="userInput" placeholder="Type a message..."></textarea>
-    <button class="play" onclick="getResponse()">Send</button>
+    <!-- Chat area -->
+    <div id="chatBox"></div>
 
-    <div id="responseContainer">
-      <p class="aiName">🤖 Ayush's AI:</p>
-      <div id="responseBox"></div>
-    </div>
+    <!-- User input -->
+    <textarea id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}"></textarea>
+    <button class="play" onclick="sendMessage()">Send</button>
 
+    <!-- About -->
     <div class="about">
       <h2>About Me</h2>
       <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
@@ -35,4 +35,6 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+
 
