@@ -7,7 +7,7 @@ async function getResponse() {
   responseBox.innerHTML = "⏳ Thinking...";
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/chat", {
+    const response = await fetch("https://ayush-ai-backend.ayush.repl.co/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input })
@@ -19,4 +19,5 @@ async function getResponse() {
     responseBox.innerHTML = "⚠️ Error: Could not connect to backend.";
   }
 }
+
 
