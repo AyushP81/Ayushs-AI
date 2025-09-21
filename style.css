@@ -10,14 +10,13 @@ body {
   overflow-x: hidden;
 }
 
-/* Container */
 .container {
   position: relative;
   z-index: 1;
   max-width: 800px;
   margin: 50px auto;
   padding: 40px;
-  background: rgba(20, 20, 30, 0.8);
+  background: rgba(20, 20, 30, 0.85);
   border-radius: 20px;
   box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
   text-align: center;
@@ -25,7 +24,6 @@ body {
   border: 1px solid #00ffff;
 }
 
-/* Title & subtitle */
 .title {
   font-size: 2.5em;
   text-shadow: 0 0 10px #00ffff;
@@ -38,14 +36,13 @@ body {
   margin-bottom: 30px;
 }
 
-/* Textarea */
 textarea {
   width: 80%;
-  height: 60px;
+  height: 50px;
   margin: 10px 0;
-  padding: 15px;
+  padding: 10px;
   border-radius: 10px;
-  border: 1px solid #00ffff;
+  border: 1px solid #0ff;
   background: rgba(0,0,0,0.5);
   color: #00ffff;
   font-size: 1em;
@@ -53,7 +50,6 @@ textarea {
   outline: none;
 }
 
-/* Button */
 button.play {
   border: 1px solid #0ff;
   padding: 12px 25px;
@@ -72,30 +68,40 @@ button.play:hover {
   transform: scale(1.05);
 }
 
-/* Response box */
-#responseContainer {
-  margin-top: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #0ff;
-  font-size: 16px;
-  line-height: 1.6;
+#chatBox {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
   text-align: left;
-  animation: fadeIn 1s ease forwards;
 }
 
-.aiName {
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-shadow: 0 0 8px #0ff;
+.message {
+  padding: 10px 15px;
+  margin: 8px 0;
+  border-radius: 15px;
+  max-width: 70%;
+  line-height: 1.5;
+  animation: fadeIn 0.5s ease forwards;
 }
 
-#responseBox {
-  min-height: 100px;
+.user {
+  background: rgba(0,255,255,0.2);
+  color: #00ffff;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
-/* About section */
+.ai {
+  background: rgba(0,255,255,0.6);
+  color: #000;
+  margin-right: auto;
+}
+
+.typing {
+  font-style: italic;
+  opacity: 0.7;
+}
+
 .about {
   margin-top: 40px;
   text-align: left;
@@ -134,9 +140,8 @@ button.play:hover {
 
 /* Animations */
 @keyframes gradientBG {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0%,100% {background-position:0% 50%}
+  50% {background-position:100% 50%}
 }
 
 @keyframes floatBlob {
@@ -148,5 +153,6 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
