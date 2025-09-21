@@ -1,27 +1,29 @@
 
 
-async function getResponse() {
-  const input = document.getElementById("userInput").value;
+function getResponse() {
+  const input = document.getElementById("userInput").value.toLowerCase();
   const responseBox = document.getElementById("responseBox");
 
-  responseBox.innerHTML = "⏳ Thinking...";
+  let reply = "";
 
-  try {
-    const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: input })
-    });
-
-    const data = await response.json();
-    responseBox.innerHTML = "🤖 Ayush's AI says: " + data.response;
-
-  } catch (err) {
-    responseBox.innerHTML = "⚠️ Error: Could not connect to backend.";
+  // Rule-based AI
+  if (input.includes("hello")) {
+    reply = "Hey Ayush! 👋 Welcome to your AI.";
+  } else if (input.includes("how are you")) {
+    reply = "I'm doing great, thanks for asking! 😃";
+  } else if (input.includes("bye")) {
+    reply = "Goodbye Ayush! 👋";
+  } else if (input.includes("who made you")) {
+    reply = "I was created by Ayush Padaruth, the legend himself! 🚀";
+  } else if (input.includes("joke")) {
+    reply = "Why did the computer show up at work late? It had a hard drive! 😆";
+  } else {
+    reply = "Hmm 🤔 I don’t know that yet. Ayush can teach me more!";
   }
+
+  responseBox.innerHTML = "🤖 Ayush's AI says: " + reply;
 }
+
 
 
 
