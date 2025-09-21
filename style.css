@@ -83,15 +83,14 @@ h1 {
 
 /* AI Response Box */
 #responseBox {
-  margin-top: 25px;
-  padding: 20px;
-  background: rgba(50, 50, 60, 0.85);
-  border-radius: 15px;
-  font-size: 18px;
-  min-height: 70px;
-  transition: background 0.3s;
-  text-align: left;
-  white-space: pre-wrap;
+  margin-top: 20px;
+  min-height: 80px;      /* a bit taller for paragraphs */
+  padding: 15px;         /* add padding inside */
+  border-radius: 10px;
+  background: rgba(50, 50, 60, 0.7);  /* subtle dark background */
+  line-height: 1.6;      /* smooth line spacing */
+  text-align: left;      /* paragraph-style alignment */
+  font-size: 16px;       /* slightly bigger text */
 }
 
 #responseBox:hover {
@@ -158,4 +157,5 @@ h1 {
   border-right: 5px solid #2575fc;
   padding: 40px;
 }
+
 
