@@ -6,24 +6,17 @@ async function getResponse() {
 
   responseBox.innerHTML = "⏳ Thinking...";
 
-  const response = await fetch(
-    "https://api-inference.huggingface.co/models/google/flan-t5-small",
-    {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/chat", {
       method: "POST",
-      headers: {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ inputs: input })
-    }
-  );
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: input })
+    });
 
-  const result = await response.json();
-
-  if (result.error) {
-    responseBox.innerHTML = "⚠️ Error: " + result.error;
-  } else {
-    responseBox.innerHTML = "🤖 Ayush's AI says: " + result[0].generated_text;
+    const data = await response.json();
+    responseBox.innerHTML = "🤖 Ayush's AI says: " + data.response;
+  } catch (err) {
+    responseBox.innerHTML = "⚠️ Error: Could not connect to backend.";
   }
 }
 
