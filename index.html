@@ -22,7 +22,7 @@
     <div id="chatBox"></div>
 
     <!-- User input -->
-    <textarea id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}"></textarea>
+    <textarea id="userInput" placeholder="Type a message..." onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
     <button class="play" onclick="sendMessage()">Send</button>
 
     <!-- About -->
@@ -35,6 +35,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
