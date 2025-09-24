@@ -10,6 +10,14 @@ body {
   overflow-x: hidden;
 }
 
+iframe[src*="replit"] {
+  display: none !important;
+}
+
+footer, .replit-footer, .replit-credit {
+  display: none !important;
+}
+
 /* Fullscreen intro */
 #intro {
   position: fixed;
@@ -231,6 +239,7 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
 
