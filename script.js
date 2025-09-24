@@ -37,6 +37,18 @@ function sendMessage() {
 function getAIResponse(input) {
   let reply = ""; // make sure reply is defined
 
+   const mathRegex = /^[0-9+\-*/().\s]+$/; // only numbers and math operators
+  if (mathRegex.test(input)) {
+    try {
+      const result = eval(input);
+      reply = `The answer is: ${result}`;
+      return reply;
+    } catch (e) {
+      reply = "Hmm, I couldn't solve that. 😅";
+      return reply;
+    }
+  }
+
   if (input.includes("hello")) reply = "Hello there! 👋 Welcome to Ayush’s AI.";
   else if (input.includes("how are you")) reply = "I'm doing great, thanks for asking! 😃";
   else if (input.includes("bye")) reply = "Goodbye! 👋";
@@ -59,6 +71,7 @@ function getAIResponse(input) {
 
   return reply; // important: return the reply
 }
+
 
 
 
