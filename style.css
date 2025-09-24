@@ -17,25 +17,34 @@ body {
   overflow: hidden;
 }
 
+body {
+  margin: 0;
+  height: 100vh;
+  background: #0f2027;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
 /* Fullscreen intro */
 #intro {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: #0f2027;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center;   /* horizontal centering */
+  align-items: center;       /* vertical centering */
   animation: fadeOut 2s ease forwards;
   animation-delay: 4s; /* stays visible for 4s before fading */
   z-index: 1000;
 }
 
 .intro-logo {
-  max-width: 60%;
-  max-height: 60%;
+  width: 60%;     /* scales logo size */
+  height: auto;
+  max-width: 500px;
   opacity: 0;
   animation: drawIn 3s ease forwards;
 }
@@ -52,6 +61,7 @@ body {
     visibility: hidden;
   }
 }
+
 
 
 /* Intro screen */
@@ -236,6 +246,7 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
 
