@@ -42,9 +42,17 @@ function getAIResponse(input) {
   if (input.includes("joke")) return "Why did the computer show up at work late? It had a hard drive! 😆";
   if (input.includes("do you know joshua martin")) return "Ah, Joshua Martin? Of course I know him! That guy is basically a legend in the F1 world of everyday life. 🏎️💨 He probably treats his breakfast like a pit stop, his homework like a Grand Prix, and his weekend like the championship race itself. Honestly, if he ever got behind the wheel of an actual F1 car, I’d bet he’d try to drift around every corner while cheering for his favorite driver at the same time! 😂";
   if (input.includes("josh") && input.includes("f1")) return "Ah, Josh loves F1? No wonder he’s always racing to finish his homework! 🏎️💨😂";
-  if (input.includes("do you know thej moodley")) return "Ah, Thej Moodley? 😏 Of course! With hair that long, I bet he has a Wi-Fi hotspot somewhere in there! 🌪️💻 Just don’t get caught in a breeze near him!"
-  return "Hmm 🤔 I don’t know that yet. Ayush can teach me more!";
+  if (input.includes("do you know thej moodley")) {
+    const responses = [
+        "Ah, Thej Moodley? With hair that long, I’m surprised he doesn’t get mistaken for a Marvel superhero! 🦸‍♂️✨",
+        "Of course I know Thej! His hair is basically a Wi-Fi antenna… I swear my signal improves when he walks by! 📡😂",
+        "Yep, Thej Moodley. Legend says his hair has its own weather forecast — cloudy with a chance of shampoo! 🌦️🧴",
+        "Who doesn’t know Thej Moodley? With that hair, he could start his own shampoo commercial franchise! 💇‍♂️✨",
+        "Oh, Thej? His hair is so long, I’m convinced he hides USB cables in there. 🔌😂"
+    ];
+    reply = responses[Math.floor(Math.random() * responses.length)];
 }
+
 
 
 
