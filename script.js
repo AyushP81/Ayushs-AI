@@ -54,11 +54,12 @@ function getAIResponse(input) {
     ];
     reply = responses[Math.floor(Math.random() * responses.length)];
   } else {
-    reply = "Hmm 🤔 I don’t know that yet. Teach me more!";
+    reply = "Hmm 🤔 I don’t know that yet.";
   }
 
   return reply; // important: return the reply
 }
+
 
 
 
