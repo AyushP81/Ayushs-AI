@@ -1,13 +1,11 @@
 
-// Show chat after intro ends
+// Show chat after intro finishes
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("intro").style.display = "none";
     document.getElementById("main-content").style.display = "flex";
-  }, 4000); // intro duration (4s total)
+  }, 5000); // 5 seconds total (logo anim + fade out)
 });
-
-
 
 
 const chatBox = document.getElementById("chatBox");
@@ -81,6 +79,7 @@ function getAIResponse(input) {
 
   return reply; // important: return the reply
 }
+
 
 
 
