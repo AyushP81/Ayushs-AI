@@ -9,21 +9,6 @@ body {
   color: #00ffff;
   overflow-x: hidden;
 }
-body {
-  margin: 0;
-  height: 100vh;
-  background: #0f2027;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-}
-
-body {
-  margin: 0;
-  height: 100vh;
-  background: #0f2027;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-}
 
 /* Fullscreen intro */
 #intro {
@@ -246,6 +231,7 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
 
