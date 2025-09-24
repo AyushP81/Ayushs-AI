@@ -10,6 +10,45 @@ body {
   overflow-x: hidden;
 }
 
+/* Intro screen */
+#intro {
+  text-align: center;
+  animation: fadeOut 2s ease forwards;
+  animation-delay: 3s; /* intro stays for 3s */
+}
+
+.intro-text {
+  font-size: 2.5rem;
+  animation: zoomIn 1.5s ease;
+}
+
+/* Fade-out effect */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Zoom-in effect */
+@keyframes zoomIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Main content styling */
+.chat-container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  max-width: 400px;
+  text-align: center;
+  display: none; /* hidden until intro ends */
+}
+
+
+
 .container {
   position: relative;
   z-index: 1;
@@ -153,6 +192,7 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
 
