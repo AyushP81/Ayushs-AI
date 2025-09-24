@@ -26,20 +26,26 @@
   </div>
 
   
-   <!-- Intro Screen -->
   <div id="intro">
-    <h1 class="intro-text">🚀 Welcome to Ayush's AI 🚀</h1>
-  </div>
+  <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
+</div>
 
-  <!-- Main Chat Container -->
-  <div id="main-content" style="display: none;">
-    <div class="chat-container">
-      <h2>Ayush's AI 🤖</h2>
-      <div id="chat-box"></div>
-      <input type="text" id="user-input" placeholder="Type your message...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
+<div id="main-content">
+  <div class="chat-container">
+    <h1>Welcome to Ayush's AI 🤖</h1>
+    <p>Type a message below to chat!</p>
+    <input type="text" id="user-input" placeholder="Say something..." />
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat-log"></div>
   </div>
+</div>
+
+<script>
+  // Wait until intro finishes, then show chat
+  setTimeout(() => {
+    document.getElementById("main-content").style.display = "flex";
+  }, 6000); // intro (4s) + fade (2s)
+</script>
   <!-- Side blobs -->
   <div class="blob left"></div>
   <div class="blob right"></div>
@@ -65,6 +71,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
