@@ -9,14 +9,33 @@ body {
   color: #00ffff;
   overflow-x: hidden;
 }
-/* Intro logo animation */
+body {
+  margin: 0;
+  height: 100vh;
+  background: #0f2027;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Fullscreen intro */
 #intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0f2027;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   animation: fadeOut 2s ease forwards;
-  animation-delay: 4s; /* stays 4 seconds before disappearing */
+  animation-delay: 4s; /* stays visible for 4s before fading */
+  z-index: 1000;
 }
 
 .intro-logo {
-  width: 250px;
+  max-width: 60%;
+  max-height: 60%;
   opacity: 0;
   animation: drawIn 3s ease forwards;
 }
@@ -33,8 +52,6 @@ body {
     visibility: hidden;
   }
 }
-
-
 
 
 /* Intro screen */
@@ -219,6 +236,7 @@ button.play:hover {
   0% { opacity: 0; transform: translateY(-10px);}
   100% { opacity: 1; transform: translateY(0);}
 }
+
 
 
 
