@@ -1,78 +1,62 @@
 const chatBox = document.getElementById("chatBox");
-const textarea = document.getElementById("userInput");
+const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("send-btn");
 
-let isWaitingForAI = false;
+// Append user/AI messages
+function appendMessage(sender, message) {
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("message", sender);
+  msgDiv.innerHTML = `<strong>${sender === "user" ? "🧑‍💻 You" : "🤖 Ayush’s AI"}:</strong> ${message}`;
+  chatBox.appendChild(msgDiv);
+  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+}
 
-// Button click
-sendBtn.addEventListener("click", () => {
-  if (!isWaitingForAI) sendMessage();
-});
-
-// Enter key
-textarea.addEventListener("keypress", (e) => {
-  if (e.key === "Enter" && !e.shiftKey && !isWaitingForAI) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-// Add message to chat
-function addMessageToChat(content, role, typing = false) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", role);
-  if (typing) msg.classList.add("typing");
-  msg.textContent = content;
-  chatBox.appendChild(msg);
+// Typing animation
+function showTyping() {
+  const typingDiv = document.createElement("div");
+  typingDiv.id = "typing";
+  typingDiv.classList.add("message", "ai");
+  typingDiv.innerHTML = `<strong>🤖 Ayush’s AI:</strong> <span class="dots">Typing<span>.</span><span>.</span><span>.</span></span>`;
+  chatBox.appendChild(typingDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
-  return msg;
 }
 
-// Update existing message (used for typing)
-function updateMessage(msgElement, newContent) {
-  msgElement.textContent = newContent;
-  msgElement.classList.remove("typing");
+function removeTyping() {
+  const typingDiv = document.getElementById("typing");
+  if (typingDiv) typingDiv.remove();
 }
 
-// Simple delay function
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Send message function
+// Send user message to backend
 async function sendMessage() {
-  const message = textarea.value.trim();
+  const message = userInput.value.trim();
   if (!message) return;
 
-  textarea.value = "";
-  addMessageToChat(message, "user");
+  appendMessage("user", message);
+  userInput.value = "";
 
-  isWaitingForAI = true;
-  const typingMsg = addMessageToChat("Ayush’s AI is typing...", "ai", true);
+  showTyping();
 
   try {
-    const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
-
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    const response = await fetch(
+      "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      }
+    );
 
     const data = await response.json();
-    // small delay to simulate typing
-    await delay(500 + Math.random() * 800);
+    removeTyping();
+    appendMessage("ai", data.reply || "⚠️ Error: Could not get response.");
 
-    updateMessage(typingMsg, data.reply);
-
-  } catch (err) {
-    updateMessage(typingMsg, `⚠️ Error: Could not get response. ${err.message}`);
-  } finally {
-    isWaitingForAI = false;
+  } catch (error) {
+    removeTyping();
+    appendMessage("ai", "⚠️ Error: Could not connect to server.");
   }
 }
 
-
+sendBtn.addEventListener("click", sendMessage);
 
 
 
