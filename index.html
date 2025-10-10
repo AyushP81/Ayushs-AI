@@ -22,8 +22,9 @@
 
     <div id="chatBox" class="chat-box"></div>
 
-    <textarea id="userInput" placeholder="Type your message..." onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
-    <button id="send-btn" class="play" onclick="sendMessage()">Send</button>
+    <textarea id="userInput" placeholder="Type your message..." 
+      onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
+    <button id="send-btn" class="play">Send</button>
 
     <div class="about">
       <h2>About Me</h2>
@@ -40,10 +41,12 @@
     // Show chat after intro
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
-      document.getElementById("main-content").style.display = "block";
+      document.getElementById("main-content").style.display = "flex";
     }, 4000); // intro duration
   </script>
+
 </body>
 </html>
+
 
 
