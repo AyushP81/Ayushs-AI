@@ -1,5 +1,6 @@
 
 /* General body */
+/* General Body */
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
@@ -10,118 +11,55 @@ body {
   overflow-x: hidden;
 }
 
-iframe[src*="replit"] {
-  display: none !important;
-}
-
-footer, .replit-footer, .replit-credit {
-  display: none !important;
-}
-
-/* Fullscreen intro */
-#intro {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #0f2027;
+/* Chat Box */
+.chat-box {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeOut 2s ease forwards;
-  animation-delay: 4s; /* stays for 4s */
-  z-index: 1000;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 15px;
+  scroll-behavior: smooth;
 }
 
-.intro-logo {
-  width: 60%;
-  max-width: 500px;
-  height: auto;
-  opacity: 0;
-  animation: drawIn 3s ease forwards;
-}
-
-/* Logo animation */
-@keyframes drawIn {
-  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
-  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-
-
-/* Intro screen */
-#intro {
-  text-align: center;
-  animation: fadeOut 2s ease forwards;
-  animation-delay: 3s; /* intro stays for 3s */
-}
-
-.intro-text {
-  font-size: 2.5rem;
-  animation: zoomIn 1.5s ease;
-}
-
-/* Fade-out effect */
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-/* Zoom-in effect */
-@keyframes zoomIn {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-/* Main content styling */
-.chat-container {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.6);
-  max-width: 400px;
-  text-align: center;
-  display: none; /* hidden until intro ends */
-}
-
-
-
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 40px;
-  background: rgba(20, 20, 30, 0.85);
+/* Messages */
+.message {
+  padding: 12px 18px;
+  margin: 8px 0;
   border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid #00ffff;
+  max-width: 70%;
+  line-height: 1.5;
+  word-wrap: break-word;
+  animation: fadeIn 0.3s ease forwards;
+  display: inline-block;
 }
 
-.title {
-  font-size: 2.5em;
-  text-shadow: 0 0 10px #00ffff;
-  margin-bottom: 10px;
+.user {
+  background: linear-gradient(135deg, #00ffff, #4a90e2);
+  color: #000;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 0 10px #00ffff;
 }
 
-.subtitle {
-  font-size: 1.2em;
-  color: #0ff;
-  margin-bottom: 30px;
+.ai {
+  background: linear-gradient(135deg, #e2e2e2, #b0b0b0);
+  color: #000;
+  align-self: flex-start;
+  margin-right: auto;
+  border-bottom-left-radius: 0;
+  box-shadow: 0 0 10px #0ff;
 }
 
+.typing {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Input Area */
 textarea {
   width: 80%;
   height: 50px;
@@ -140,7 +78,7 @@ button.play {
   border: 1px solid #0ff;
   padding: 12px 25px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0,0,0,0.5);
   color: #00ffff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -154,48 +92,15 @@ button.play:hover {
   transform: scale(1.05);
 }
 
-#chatBox {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 20px;
-  text-align: left;
+/* Animations */
+@keyframes gradientBG {
+  0%,100% {background-position:0% 50%}
+  50% {background-position:100% 50%}
 }
 
-.message {
-  padding: 10px 15px;
-  margin: 8px 0;
-  border-radius: 15px;
-  max-width: 70%;
-  line-height: 1.5;
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.user {
-  background: rgba(0,255,255,0.2);
-  color: #00ffff;
-  align-self: flex-end;
-  margin-left: auto;
-}
-
-.ai {
-  background: rgba(0,255,255,0.6);
-  color: #000;
-  margin-right: auto;
-}
-
-.typing {
-  font-style: italic;
-  opacity: 0.7;
-}
-
-.about {
-  margin-top: 40px;
-  text-align: left;
-  background: rgba(0,0,0,0.5);
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #0ff;
-  text-shadow: 0 0 5px #0ff;
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-10px);}
+  100% { opacity: 1; transform: translateY(0);}
 }
 
 /* Side blobs */
@@ -224,23 +129,10 @@ button.play:hover {
   right: -150px;
 }
 
-/* Animations */
-@keyframes gradientBG {
-  0%,100% {background-position:0% 50%}
-  50% {background-position:100% 50%}
-}
-
 @keyframes floatBlob {
   0%,100% { transform: translateY(0) rotate(0deg);}
   50% { transform: translateY(80px) rotate(180deg);}
 }
-
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-10px);}
-  100% { opacity: 1; transform: translateY(0);}
-}
-
-
 
 
 
