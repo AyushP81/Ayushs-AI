@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return text;
   }
 
+
+  const recentMessages = chatHistory.slice(-6).map(msg => ({
+    role: msg.sender === "user" ? "user" : "assistant",
+    content: msg.text
+}));
   // Add message to chat
   function addMessage(sender, text) {
     // Limit message length
@@ -90,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 
 
 
