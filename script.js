@@ -2,12 +2,19 @@ const chatBox = document.getElementById("chatBox");
 const textarea = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 
-sendBtn.addEventListener("click", sendMessage);
-textarea.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
+let isWaitingForAI = false;
+
+sendBtn.addEventListener("click", () => {
+  if (!isWaitingForAI) sendMessage();
 });
 
-// Add a message to the chat
+textarea.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && !isWaitingForAI) {
+    e.preventDefault(); // prevent newline
+    sendMessage();
+  }
+});
+
 function addMessageToChat(content, role, typing = false) {
   const msg = document.createElement("div");
   msg.classList.add("message", role);
@@ -18,26 +25,23 @@ function addMessageToChat(content, role, typing = false) {
   return msg;
 }
 
-// Update a message (used for replacing typing placeholder)
 function updateMessage(msgElement, newContent) {
   msgElement.textContent = newContent;
   msgElement.classList.remove("typing");
 }
 
-// Simulate typing delay
 function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function sendMessage() {
   const message = textarea.value.trim();
   if (!message) return;
 
-  // Show user's message
-  addMessageToChat(message, "user");
   textarea.value = "";
+  addMessageToChat(message, "user");
 
-  // Show AI typing
+  isWaitingForAI = true;
   const typingMsg = addMessageToChat("Ayush’s AI is typing...", "ai", true);
 
   try {
@@ -50,17 +54,16 @@ async function sendMessage() {
     if (!response.ok) throw new Error(`HTTP error ${response.status}`);
 
     const data = await response.json();
-    
-    // Small delay to simulate typing
     await delay(500 + Math.random() * 800);
 
     updateMessage(typingMsg, data.reply);
 
   } catch (err) {
     updateMessage(typingMsg, `⚠️ Error: Could not get response. ${err.message}`);
+  } finally {
+    isWaitingForAI = false;
   }
 }
-
 
 
 
