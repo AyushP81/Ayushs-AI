@@ -1,8 +1,12 @@
 
 /* General body */
-/* General Body */
-body {
+/* -------------------- General Body -------------------- */
+html, body {
+  height: 100%;
   margin: 0;
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
   font-family: 'Orbitron', sans-serif;
   background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1f1c2c);
   background-size: 400% 400%;
@@ -11,31 +15,105 @@ body {
   overflow-x: hidden;
 }
 
-/* Chat Box */
+/* Hide Replit footer/iframe */
+iframe[src*="replit"], footer, .replit-footer, .replit-credit {
+  display: none !important;
+}
+
+/* -------------------- Intro Screen -------------------- */
+#intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0f2027;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeOut 2s ease forwards;
+  animation-delay: 4s;
+  z-index: 1000;
+  text-align: center;
+}
+
+.intro-logo {
+  width: 60%;
+  max-width: 500px;
+  height: auto;
+  opacity: 0;
+  animation: drawIn 3s ease forwards;
+}
+
+/* Logo Animation */
+@keyframes drawIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* -------------------- Main Container -------------------- */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  background: rgba(20, 20, 30, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid #00ffff;
+  z-index: 1;
+}
+
+/* Titles and Subtitles */
+.title {
+  font-size: 2.5em;
+  text-shadow: 0 0 10px #00ffff;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  color: #0ff;
+  margin-bottom: 20px;
+}
+
+/* -------------------- Chat Box -------------------- */
 .chat-box {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 400px;
-  overflow-y: auto;
+  align-items: center; /* center messages */
   padding: 10px;
   background: rgba(0,0,0,0.2);
   border-radius: 15px;
   scroll-behavior: smooth;
 }
 
-/* Messages */
+/* -------------------- Messages -------------------- */
 .message {
   padding: 12px 18px;
-  margin: 8px 0;
+  margin: 5px 0;
   border-radius: 20px;
   max-width: 70%;
   line-height: 1.5;
   word-wrap: break-word;
   animation: fadeIn 0.3s ease forwards;
-  display: inline-block;
 }
 
+/* User messages (right) */
 .user {
   background: linear-gradient(135deg, #00ffff, #4a90e2);
   color: #000;
@@ -45,6 +123,7 @@ body {
   box-shadow: 0 0 10px #00ffff;
 }
 
+/* AI messages (left) */
 .ai {
   background: linear-gradient(135deg, #e2e2e2, #b0b0b0);
   color: #000;
@@ -54,12 +133,19 @@ body {
   box-shadow: 0 0 10px #0ff;
 }
 
+/* Typing animation */
 .typing {
   font-style: italic;
   opacity: 0.7;
 }
 
-/* Input Area */
+/* Fade-in animation */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------- Input & Button -------------------- */
 textarea {
   width: 80%;
   height: 50px;
@@ -78,7 +164,7 @@ button.play {
   border: 1px solid #0ff;
   padding: 12px 25px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #00ffff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -92,18 +178,19 @@ button.play:hover {
   transform: scale(1.05);
 }
 
-/* Animations */
-@keyframes gradientBG {
-  0%,100% {background-position:0% 50%}
-  50% {background-position:100% 50%}
+/* -------------------- About Section -------------------- */
+.about {
+  margin-top: 30px;
+  text-align: left;
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #0ff;
+  text-shadow: 0 0 5px #0ff;
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-10px);}
-  100% { opacity: 1; transform: translateY(0);}
-}
-
-/* Side blobs */
+/* -------------------- Side Blobs -------------------- */
 .blob {
   position: absolute;
   border-radius: 50%;
@@ -130,11 +217,15 @@ button.play:hover {
 }
 
 @keyframes floatBlob {
-  0%,100% { transform: translateY(0) rotate(0deg);}
-  50% { transform: translateY(80px) rotate(180deg);}
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(80px) rotate(180deg); }
 }
 
-
+/* -------------------- Background Animation -------------------- */
+@keyframes gradientBG {
+  0%,100% {background-position:0% 50%}
+  50% {background-position:100% 50%}
+}
 
 
 
