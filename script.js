@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
 
   // Replace this with your actual Replit backend URL
-  const BACKEND_URL = "https://Python.ayushpadaruth20.replit.dev/chat";
+  const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat";
 
   function addMessage(sender, text) {
     const msg = document.createElement("div");
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") sendMessage();
   });
 });
+
 
 
 
