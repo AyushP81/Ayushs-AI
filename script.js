@@ -6,7 +6,7 @@ const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("send-btn");
 
 // Replace with your backend URL
-const BACKEND_URL = "https://python.ayushpadaruth20.repl.co/chat";
+const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev";
 
 // Add message function
 function addMessage(sender, text) {
@@ -64,6 +64,7 @@ userInput.addEventListener("keypress", (e) => {
     sendMessage();
   }
 });
+
 
 
 
