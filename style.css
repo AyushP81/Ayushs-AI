@@ -1,5 +1,4 @@
 
-/* General body */
 /* -------------------- General Body -------------------- */
 html, body {
   height: 100%;
@@ -61,8 +60,9 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 90%;
-  max-width: 500px;
+  width: 95%;         /* wider container */
+  max-width: 700px;   /* expanded max width */
+  min-width: 500px;   /* prevents being too narrow */
   padding: 30px;
   background: rgba(20, 20, 30, 0.85);
   border-radius: 20px;
@@ -89,7 +89,7 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
 /* -------------------- Chat Box -------------------- */
 .chat-box {
   width: 100%;
-  max-height: 300px;
+  max-height: 400px;  /* taller for more chat visibility */
   overflow-y: auto;
   margin-bottom: 15px;
   display: flex;
@@ -147,7 +147,7 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
 
 /* -------------------- Input & Button -------------------- */
 textarea {
-  width: 80%;
+  width: 90%;        /* wider input */
   height: 50px;
   margin: 10px 0;
   padding: 10px;
@@ -161,6 +161,8 @@ textarea {
 }
 
 button.play {
+  width: 90%;         /* matches textarea */
+  max-width: 200px;
   border: 1px solid #0ff;
   padding: 12px 25px;
   border-radius: 12px;
@@ -226,9 +228,6 @@ button.play:hover {
   0%,100% {background-position:0% 50%}
   50% {background-position:100% 50%}
 }
-
-
-
 
 
 
