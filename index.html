@@ -1,74 +1,42 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush's AI</title>
+  <!-- Link to external CSS -->
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
- <!-- Intro Logo Screen -->
+
+  <!-- Intro Screen -->
   <div id="intro">
     <img src="photo2.png" alt="Ayush's AI Logo" class="intro-logo">
   </div>
 
-  <!-- Main Website -->
-  <div id="main-content" style="display: none;">
-    <div class="chat-container">
-      <h1>Ayush's AI 🤖</h1>
-      <div id="chat-box"></div>
-      <input type="text" id="user-input" placeholder="Type your message...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
-
-  
-  <div id="intro">
-  <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
-</div>
-
-<div id="main-content">
-  <div class="chat-container">
+  <!-- Main Content -->
+  <div id="main-content">
     <h1>Welcome to Ayush's AI 🤖</h1>
-    <p>Type a message below to chat!</p>
-    <input type="text" id="user-input" placeholder="Say something..." />
-    <button onclick="sendMessage()">Send</button>
-    <div id="chat-log"></div>
+    <div id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Type your message..." />
+    <button id="sendButton">Send</button>
   </div>
-</div>
 
-<script>
-  // Wait until intro finishes, then show chat
-  setTimeout(() => {
-    document.getElementById("main-content").style.display = "flex";
-  }, 6000); // intro (4s) + fade (2s)
-</script>
-  <!-- Side blobs -->
+  <!-- Side blobs (decorations) -->
   <div class="blob left"></div>
   <div class="blob right"></div>
 
-  <div class="container">
-    <h1 class="title">Welcome to Ayush's AI</h1>
-    <p class="subtitle">By Ayush Padaruth</p>
-
-    <!-- Chat area -->
-    <div id="chatBox"></div>
-
-    <!-- User input -->
-    <textarea id="userInput" placeholder="Type a message..." onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
-    <button class="play" onclick="sendMessage()">Send</button>
-
-    <!-- About -->
-    <div class="about">
-      <h2>About Me</h2>
-      <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
-    </div>
+  <!-- About Section -->
+  <div class="about">
+    <h2>About Me</h2>
+    <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
   </div>
 
+  <!-- Link to external JavaScript -->
   <script src="script.js"></script>
+  
 </body>
 </html>
 
