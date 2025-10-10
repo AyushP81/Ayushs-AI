@@ -1,3 +1,20 @@
+// Global chat history
+let chatHistory = [];
+
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+
+// Handle send button click
+sendBtn.addEventListener("click", sendMessage);
+
+// Handle Enter key
+userInput.addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    sendMessage();
+  }
+});
 
 async function sendMessage() {
   const input = userInput.value.trim();
@@ -10,10 +27,10 @@ async function sendMessage() {
   chatBox.appendChild(userMsg);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  // Add to chatHistory
+  // Add to chat history
   chatHistory.push({ role: "user", content: input });
 
-  // Only keep last 5 messages
+  // Only send last 5 messages to backend
   const recentHistory = chatHistory.slice(-5);
 
   // Show AI typing
@@ -24,6 +41,7 @@ async function sendMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   userInput.value = "";
+  sendBtn.disabled = true;
 
   try {
     const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
@@ -31,22 +49,22 @@ async function sendMessage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: input,
-        history: recentHistory // only send last 5 messages
+        history: recentHistory
       })
     });
 
     const data = await res.json();
-    typingMsg.remove(); // remove typing
+    typingMsg.remove(); // remove typing indicator
 
+    // Show AI reply
     const aiMsg = document.createElement("div");
     aiMsg.className = "message ai";
     aiMsg.textContent = `🤖 Ayush’s AI: ${data.reply}`;
     chatBox.appendChild(aiMsg);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Add AI reply to chatHistory
+    // Add AI reply to chat history
     chatHistory.push({ role: "assistant", content: data.reply });
-
   } catch (err) {
     typingMsg.remove();
     const errorMsg = document.createElement("div");
@@ -55,8 +73,12 @@ async function sendMessage() {
     chatBox.appendChild(errorMsg);
     chatBox.scrollTop = chatBox.scrollHeight;
     console.error(err);
+  } finally {
+    sendBtn.disabled = false;
+    userInput.focus();
   }
 }
+
 
 
 
