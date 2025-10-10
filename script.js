@@ -9,6 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Replace this with your actual Replit backend URL
   const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat";
 
+
+  const typingMsg = document.createElement("div");
+  typingMsg.classList.add("ai", "typing");
+  typingMsg.textContent = "🤖 Ayush’s AI is typing...";
+  chatBox.appendChild(typingMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
   function addMessage(sender, text) {
     const msg = document.createElement("div");
     msg.classList.add(sender);
@@ -47,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") sendMessage();
   });
 });
+
 
 
 
