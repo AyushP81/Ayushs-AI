@@ -1,87 +1,65 @@
-// Global chat history
-let chatHistory = [];
-
 const chatBox = document.getElementById("chatBox");
-const userInput = document.getElementById("userInput");
+const textarea = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 
-// Handle send button click
 sendBtn.addEventListener("click", sendMessage);
-
-// Handle Enter key
-userInput.addEventListener("keypress", function(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    sendMessage();
-  }
+textarea.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
 });
 
-async function sendMessage() {
-  const input = userInput.value.trim();
-  if (!input) return;
-
-  // Show user message
-  const userMsg = document.createElement("div");
-  userMsg.className = "message user";
-  userMsg.textContent = `🧑‍💻 You: ${input}`;
-  chatBox.appendChild(userMsg);
+// Add a message to the chat
+function addMessageToChat(content, role, typing = false) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", role);
+  if (typing) msg.classList.add("typing");
+  msg.textContent = content;
+  chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Add to chat history
-  chatHistory.push({ role: "user", content: input });
-
-  // Only send last 5 messages to backend
-  const recentHistory = chatHistory.slice(-5);
-
-  // Show AI typing
-  const typingMsg = document.createElement("div");
-  typingMsg.className = "message ai typing";
-  typingMsg.textContent = "🤖 Ayush’s AI is typing...";
-  chatBox.appendChild(typingMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  userInput.value = "";
-  sendBtn.disabled = true;
-
-  try {
-    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: input,
-        history: recentHistory
-      })
-    });
-
-    const data = await res.json();
-    typingMsg.remove(); // remove typing indicator
-
-    // Show AI reply
-    const aiMsg = document.createElement("div");
-    aiMsg.className = "message ai";
-    aiMsg.textContent = `🤖 Ayush’s AI: ${data.reply}`;
-    chatBox.appendChild(aiMsg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    // Add AI reply to chat history
-    chatHistory.push({ role: "assistant", content: data.reply });
-  } catch (err) {
-    typingMsg.remove();
-    const errorMsg = document.createElement("div");
-    errorMsg.className = "message ai";
-    errorMsg.textContent = `⚠️ Error: Could not connect to backend.`;
-    chatBox.appendChild(errorMsg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    console.error(err);
-  } finally {
-    sendBtn.disabled = false;
-    userInput.focus();
-  }
+  return msg;
 }
 
+// Update a message (used for replacing typing placeholder)
+function updateMessage(msgElement, newContent) {
+  msgElement.textContent = newContent;
+  msgElement.classList.remove("typing");
+}
 
+// Simulate typing delay
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
+async function sendMessage() {
+  const message = textarea.value.trim();
+  if (!message) return;
 
+  // Show user's message
+  addMessageToChat(message, "user");
+  textarea.value = "";
+
+  // Show AI typing
+  const typingMsg = addMessageToChat("Ayush’s AI is typing...", "ai", true);
+
+  try {
+    const response = await fetch("YOUR_BACKEND_URL/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
+    const data = await response.json();
+    
+    // Small delay to simulate typing
+    await delay(500 + Math.random() * 800);
+
+    updateMessage(typingMsg, data.reply);
+
+  } catch (err) {
+    updateMessage(typingMsg, `⚠️ Error: Could not get response. ${err.message}`);
+  }
+}
 
 
 
