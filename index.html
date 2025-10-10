@@ -4,48 +4,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayush's AI</title>
-  <!-- External CSS -->
+  <title>Ayush's AI 🤖</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Main container for centering everything -->
-  <div class="container">
+  <!-- Intro Screen -->
+  <div id="intro">
+    <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
+  </div>
 
-    <!-- Intro Screen -->
-    <div id="intro">
-      <img src="photo2.png" alt="Ayush's AI Logo" class="intro-logo">
-    </div>
+  <!-- Main Chat Container -->
+  <div id="main-content" class="container" style="display: none;">
+    <h1 class="title">Welcome to Ayush's AI 🤖</h1>
+    <p class="subtitle">Type a message below to chat!</p>
 
-    <!-- Main Content -->
-    <div id="main-content">
-      <h1 class="title">Welcome to Ayush's AI 🤖</h1>
+    <div id="chatBox" class="chat-box"></div>
 
-      <!-- Chat Box -->
-      <div id="chat-box"></div>
+    <textarea id="userInput" placeholder="Type your message..." onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
+    <button id="send-btn" class="play" onclick="sendMessage()">Send</button>
 
-      <!-- User Input -->
-      <input type="text" id="user-input" placeholder="Type your message..." />
-      <button id="send-btn">Send</button>
-    </div>
-
-    <!-- About Section -->
     <div class="about">
       <h2>About Me</h2>
       <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
     </div>
-
   </div>
 
-  <!-- Side blobs for decoration -->
+  <!-- Side Blobs -->
   <div class="blob left"></div>
   <div class="blob right"></div>
 
-  <!-- External JS -->
   <script src="script.js"></script>
-
+  <script>
+    // Show chat after intro
+    setTimeout(() => {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+    }, 4000); // intro duration
+  </script>
 </body>
 </html>
+
 
