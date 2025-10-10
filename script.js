@@ -1,85 +1,52 @@
 
-// Show chat after intro finishes
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("main-content").style.display = "flex";
-  }, 5000); // 5 seconds total (logo anim + fade out)
-});
 
 
-const chatBox = document.getElementById("chatBox");
+document.addEventListener("DOMContentLoaded", () => {
+  const chatBox = document.getElementById("chat-box");
+  const userInput = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
 
-function sendMessage() {
-  const inputEl = document.getElementById("userInput");
-  const input = inputEl.value.trim();
-  if (!input) return;
-  
-  // Show user message
-  const userMsg = document.createElement("div");
-  userMsg.classList.add("message","user");
-  userMsg.textContent = input;
-  chatBox.appendChild(userMsg);
+  // Replace this with your actual Replit backend URL
+  const BACKEND_URL = "https://Python.ayushpadaruth20.replit.dev/chat";
 
-  inputEl.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Typing indicator
-  const typing = document.createElement("div");
-  typing.classList.add("message","ai","typing");
-  typing.textContent = "Ayush's AI is typing...";
-  chatBox.appendChild(typing);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  setTimeout(() => {
-    typing.remove();
-    // AI response
-    const aiMsg = document.createElement("div");
-    aiMsg.classList.add("message","ai");
-    aiMsg.textContent = getAIResponse(input.toLowerCase());
-    chatBox.appendChild(aiMsg);
+  function addMessage(sender, text) {
+    const msg = document.createElement("div");
+    msg.classList.add(sender);
+    msg.textContent = text;
+    chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
-  }, 800 + Math.random()*800); // random typing delay
-}
+  }
 
-function getAIResponse(input) {
-  let reply = ""; // make sure reply is defined
+  async function sendMessage() {
+    const input = userInput.value.trim();
+    if (!input) return;
 
-   const mathRegex = /^[0-9+\-*/().\s]+$/; // only numbers and math operators
-  if (mathRegex.test(input)) {
+    addMessage("user", `🧑‍💻 You: ${input}`);
+    userInput.value = "";
+
     try {
-      const result = eval(input);
-      reply = `The answer is: ${result}`;
-      return reply;
-    } catch (e) {
-      reply = "Hmm, I couldn't solve that. 😅";
-      return reply;
+      const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
+
+      const data = await response.json();
+      addMessage("ai", `🤖 Ayush’s AI: ${data.reply}`);
+    } catch (error) {
+      addMessage("ai", "⚠️ Error: Could not connect to backend.");
+      console.error(error);
     }
   }
 
-  if (input.includes("hello")) reply = "Hello there! 👋 Welcome to Ayush’s AI.";
-  else if (input.includes("how are you")) reply = "I'm doing great, thanks for asking! 😃";
-  else if (input.includes("bye")) reply = "Goodbye! 👋";
-  else if (input.includes("who made you")) reply = "I was created by Ayush Padaruth, the legend himself! 🚀";
-  else if (input.includes("joke")) reply = "Why did the computer show up at work late? It had a hard drive! 😆";
-  else if (input.includes("do you know joshua martin")) reply = "Ah, Joshua Martin? Of course I know him! That guy is basically a legend in the F1 world of everyday life. 🏎️💨 He probably treats his breakfast like a pit stop, his homework like a Grand Prix, and his weekend like the championship race itself. Honestly, if he ever got behind the wheel of an actual F1 car, I’d bet he’d try to drift around every corner while cheering for his favorite driver at the same time! 😂";
-  else if (input.includes("josh") && input.includes("f1")) reply = "Ah, Josh loves F1? No wonder he’s always racing to finish his homework! 🏎️💨😂";
-  else if (input.includes("do you know thej moodley")) {
-    const responses = [
-        "Ah, Thej Moodley? With hair that long, I’m surprised he doesn’t get mistaken for a Marvel superhero! 🦸‍♂️✨",
-        "Of course I know Thej! His hair is basically a Wi-Fi antenna… I swear my signal improves when he walks by! 📡😂",
-        "Yep, Thej Moodley. Legend says his hair has its own weather forecast — cloudy with a chance of shampoo! 🌦️🧴",
-        "Who doesn’t know Thej Moodley? With that hair, he could start his own shampoo commercial franchise! 💇‍♂️✨",
-        "Oh, Thej? His hair is so long, I’m convinced he hides USB cables in there. 🔌😂"
-    ];
-    reply = responses[Math.floor(Math.random() * responses.length)];
-  } else {
-    reply = "Hmm 🤔 I don’t know that yet.";
-  }
+  // Send message on button click
+  sendBtn.addEventListener("click", sendMessage);
 
-  return reply; // important: return the reply
-}
-
+  // Send message when pressing Enter
+  userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+});
 
 
 
