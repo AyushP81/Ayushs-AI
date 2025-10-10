@@ -1,8 +1,4 @@
 
-const chatBox = document.getElementById("chatBox");
-const userInput = document.getElementById("userInput");
-let chatHistory = []; // keeps track of the messages
-
 async function sendMessage() {
   const input = userInput.value.trim();
   if (!input) return;
@@ -16,6 +12,9 @@ async function sendMessage() {
 
   // Add to chatHistory
   chatHistory.push({ role: "user", content: input });
+
+  // Only keep last 5 messages
+  const recentHistory = chatHistory.slice(-5);
 
   // Show AI typing
   const typingMsg = document.createElement("div");
@@ -32,14 +31,13 @@ async function sendMessage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: input,
-        history: chatHistory // send the chat history to backend
+        history: recentHistory // only send last 5 messages
       })
     });
 
     const data = await res.json();
     typingMsg.remove(); // remove typing
 
-    // Show AI reply
     const aiMsg = document.createElement("div");
     aiMsg.className = "message ai";
     aiMsg.textContent = `🤖 Ayush’s AI: ${data.reply}`;
@@ -59,8 +57,6 @@ async function sendMessage() {
     console.error(err);
   }
 }
-
-
 
 
 
