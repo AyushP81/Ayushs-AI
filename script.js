@@ -1,4 +1,5 @@
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const chatBox = document.getElementById("chatBox");
   const userInput = document.getElementById("userInput");
@@ -7,10 +8,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Your working backend URL
   const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat";
 
-  // Clean repeated emojis/characters
+  // Clean repeated characters/emojis & limit total emojis
   function cleanAIReply(text) {
-    // Replace sequences of more than 3 identical characters/emojis with just 3
-    return text.replace(/(.)\1{3,}/g, "$1$1$1");
+    // Limit sequences of more than 3 identical characters/emojis
+    text = text.replace(/(.)\1{3,}/g, "$1$1$1");
+
+    // Limit total emojis to max 10, replace excess with "…"
+    let emojis = text.match(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu) || [];
+    if (emojis.length > 10) {
+      text = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim() + " …";
+    }
+
+    return text;
   }
 
   // Add message to chat
@@ -20,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const msg = document.createElement("div");
     msg.classList.add("message", sender);
-    msg.textContent = text; // safe rendering
+    msg.textContent = text;
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -49,21 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
-
-      // Remove typing message
       typingMsg.remove();
 
-      // Get AI reply safely
       let reply = data.reply || "⚠️ Error: AI returned empty response";
-
-      // Clean repeated characters/emojis
       reply = cleanAIReply(reply);
 
       // Truncate extremely long responses
-      if (reply.length > 1000) reply = reply.substring(0, 1000) + "...";
+      if(reply.length > 1000) reply = reply.substring(0, 1000) + "...";
 
       // Simulate typing delay
-      const typingDelay = Math.min(reply.length * 20, 1500); // 20ms per character, max 1.5s
+      const typingDelay = Math.min(reply.length * 20, 1500);
       setTimeout(() => {
         addMessage("ai", `🤖 Ayush’s AI: ${reply}`);
       }, typingDelay);
@@ -78,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Send message on button click
   sendBtn.addEventListener("click", sendMessage);
 
-  // Send message when pressing Enter (without shift)
+  // Send message on Enter (without shift)
   userInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -86,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
 
 
 
