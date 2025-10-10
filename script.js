@@ -1,5 +1,4 @@
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const chatBox = document.getElementById("chatBox");
   const userInput = document.getElementById("userInput");
@@ -7,6 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Your working backend URL
   const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat";
+
+  // Clean repeated emojis/characters
+  function cleanAIReply(text) {
+    // Replace sequences of more than 3 identical characters/emojis with just 3
+    return text.replace(/(.)\1{3,}/g, "$1$1$1");
+  }
 
   // Add message to chat
   function addMessage(sender, text) {
@@ -51,6 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Get AI reply safely
       let reply = data.reply || "⚠️ Error: AI returned empty response";
 
+      // Clean repeated characters/emojis
+      reply = cleanAIReply(reply);
+
       // Truncate extremely long responses
       if (reply.length > 1000) reply = reply.substring(0, 1000) + "...";
 
@@ -78,8 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-
 
 
 
