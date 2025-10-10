@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,34 +12,40 @@
 </head>
 <body>
 
-  <!-- Intro Screen -->
-  <div id="intro">
-    <img src="photo2.png" alt="Ayush's AI Logo" class="intro-logo">
-  </div>
+  <!-- Main container to center everything -->
+  <div class="container">
 
-  <!-- Main Content -->
-  <div id="main-content">
-    <h1>Welcome to Ayush's AI 🤖</h1>
-    <div id="chatBox"></div>
-    <input type="text" id="userInput" placeholder="Type your message..." />
-    <button id="sendButton">Send</button>
+    <!-- Intro Screen -->
+    <div id="intro">
+      <img src="photo2.png" alt="Ayush's AI Logo" class="intro-logo">
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+      <h1 class="title">Welcome to Ayush's AI 🤖</h1>
+      <div id="chatBox" class="chat-box"></div>
+      <input type="text" id="userInput" class="chat-input" placeholder="Type your message..." />
+      <button id="sendButton" class="chat-send">Send</button>
+    </div>
+
+    <!-- About Section -->
+    <div class="about">
+      <h2>About Me</h2>
+      <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
+    </div>
+
   </div>
 
   <!-- Side blobs (decorations) -->
   <div class="blob left"></div>
   <div class="blob right"></div>
 
-  <!-- About Section -->
-  <div class="about">
-    <h2>About Me</h2>
-    <p>Hi! I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming. This AI is one of my fun experiments to bring my ideas online.</p>
-  </div>
-
   <!-- Link to external JavaScript -->
   <script src="script.js"></script>
-  
+
 </body>
 </html>
+
 
 
 
