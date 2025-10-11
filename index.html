@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush's AI 🤖</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -14,20 +14,18 @@
     <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
   </div>
 
-  <!-- Authentication Container -->
-  <div class="auth-container" id="auth-container">
+  <!-- Auth Container -->
+  <div id="auth-container" class="auth-container">
     <h1>Ayush's AI</h1>
 
-    <!-- Sign-Up Form -->
     <div id="signup-form">
       <input type="text" id="signup-username" placeholder="Username">
-      <input type="password" id="signup-password" placeholder="Password">
       <input type="email" id="signup-email" placeholder="Email">
+      <input type="password" id="signup-password" placeholder="Password">
       <button onclick="signup()">Sign Up</button>
     </div>
 
-    <!-- Login Form -->
-    <div id="login-form" style="display: none;">
+    <div id="login-form">
       <input type="text" id="login-username" placeholder="Username">
       <input type="password" id="login-password" placeholder="Password">
       <button onclick="login()">Login</button>
@@ -47,24 +45,33 @@
       onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
     <button id="send-btn" class="play">Send</button>
 
+    <button onclick="logout()" style="margin-top: 10px;">Logout</button>
+
     <div class="about">
       <h2>About Me</h2>
       <p>I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming.</p>
     </div>
   </div>
 
-  <!-- Side Blobs -->
   <div class="blob left"></div>
   <div class="blob right"></div>
 
   <script src="script.js"></script>
   <script>
-    // Show intro then auth container
+    // Intro animation
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
-      document.getElementById("auth-container").style.display = "flex";
+
+      // Auto-login check
+      const username = localStorage.getItem("username");
+      if(username) {
+        document.getElementById("auth-container").style.display = "none";
+        document.getElementById("main-content").style.display = "flex";
+      } else {
+        document.getElementById("auth-container").style.display = "flex";
+        document.getElementById("main-content").style.display = "none";
+      }
     }, 4000);
   </script>
-
 </body>
 </html>
