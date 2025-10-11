@@ -25,9 +25,9 @@ function toggleForms() {
 }
 
 function signup() {
-  const username = document.getElementById("signup-username").value;
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
+  const username = document.getElementById("signup-username").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value.trim();
 
   if (!username || !email || !password) {
     alert("Please fill in all fields.");
@@ -39,8 +39,8 @@ function signup() {
 }
 
 function login() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value.trim();
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   // Secret admin login
@@ -63,7 +63,7 @@ function login() {
 
 function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
-  document.getElementById("main-content").style.display = "block";
+  document.getElementById("main-content").style.display = "flex";
 }
 
 // === CHAT SYSTEM ===
@@ -72,18 +72,36 @@ const userInput = document.getElementById("userInput");
 
 document.getElementById("send-btn").addEventListener("click", sendMessage);
 
-function sendMessage() {
+async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
 
   addMessage(message, "user");
   userInput.value = "";
 
-  setTimeout(() => {
-    getAIResponse(message);
-  }, 1000);
+  showTyping();
+
+  try {
+    const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    removeTyping();
+
+    const aiText = data?.response || "⚠️ Could not get a response.";
+    showTypingEffect(aiText);
+
+  } catch (error) {
+    removeTyping();
+    addMessage("⚠️ Could not connect to server.", "ai");
+    console.error(error);
+  }
 }
 
+// === MESSAGES ===
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -92,32 +110,22 @@ function addMessage(text, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function getAIResponse(userMessage) {
-  let response = "";
-
-  if (userMessage.toLowerCase().includes("hello")) {
-    response = "Hi there! 😊 How can I assist you today?";
-  } else if (userMessage.toLowerCase().includes("artificial intelligence")) {
-    response = `
-Artificial Intelligence (AI) is the simulation of human intelligence in machines. 
-It allows computers to learn, reason, and make decisions.
-
-AI is used in:
-- Self-driving cars 🚗
-- Virtual assistants (like Siri or Alexa)
-- Recommendation systems (Netflix, YouTube)
-- Healthcare and robotics 🤖
-
-Would you like to learn about how AI *learns* or how it’s *used* in daily life?
-    `;
-  } else {
-    response = "I'm still learning 🧠, but I’ll try my best to help you!";
-  }
-
-  showTypingEffect(response);
+// === TYPING INDICATOR ===
+function showTyping() {
+  const typingDiv = document.createElement("div");
+  typingDiv.id = "typing";
+  typingDiv.classList.add("message", "ai");
+  typingDiv.textContent = "🤖 Ayush’s AI is typing...";
+  chatBox.appendChild(typingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// === AI Typing Effect + "Read More" Toggle ===
+function removeTyping() {
+  const typingDiv = document.getElementById("typing");
+  if (typingDiv) typingDiv.remove();
+}
+
+// === AI TYPING EFFECT + READ MORE / COLLAPSE ===
 function showTypingEffect(fullText) {
   const msg = document.createElement("div");
   msg.classList.add("message", "ai");
