@@ -1,300 +1,299 @@
-/* -------------------- General Body -------------------- */
+/* ======================= Global & Background ======================= */
 html, body {
   height: 100%;
   margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: #0b0b0d;           /* dark base */
+  color: #e6f8ff;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Orbitron', sans-serif;
-  background: linear-gradient(-45deg, #1a1a2e, #0f0c29, #302b63, #1f1c2c);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
-  color: #fff;
   overflow-x: hidden;
 }
 
-/* -------------------- Intro Screen -------------------- */
-#intro {
+/* subtle moving gradient (very faint) */
+body::before{
+  content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #0f2027;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 10%, rgba(0,120,255,0.06), transparent 10%),
+              radial-gradient(ellipse at 80% 90%, rgba(255,120,200,0.03), transparent 12%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======================= Intro ======================= */
+#intro{
+  position: fixed;
+  inset: 0;
+  background: #060607;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
+  transition: opacity 0.9s ease;
 }
-
-.intro-logo {
-  width: 50%;
-  max-width: 400px;
+.intro-logo{
+  width: 260px;
+  max-width: 45%;
   opacity: 0;
-  animation: drawIn 3s ease forwards;
+  transform: scale(0.9);
+  animation: introIn 1.6s ease forwards;
+}
+@keyframes introIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-@keyframes drawIn {
-  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
-  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
-}
-
-/* -------------------- Auth Container -------------------- */
-.auth-container {
+/* ======================= Auth (Signup / Login) ======================= */
+.auth-container{
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  width: 100%;
 }
 
 .auth-card {
-  background: rgba(20, 20, 30, 0.9);
-  padding: 40px 50px;
-  border-radius: 25px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.5), 0 0 80px rgba(0,255,255,0.2);
+  width: 360px;
+  background: linear-gradient(180deg, rgba(18,18,20,0.92), rgba(14,14,16,0.92));
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 80px rgba(0,255,255,0.06);
+  border: 1px solid rgba(0,255,255,0.06);
   text-align: center;
-  width: 350px;
-  backdrop-filter: blur(10px);
-  border: 1px solid #00ffff;
+  z-index: 20;
+}
+.auth-card h1{
+  margin: 0 0 12px 0;
+  color: #9ff6ff;
+  font-size: 20px;
+  letter-spacing: .6px;
+}
+.auth-card p#auth-message {
+  min-height: 18px;
+  margin: 6px 0 14px 0;
+  color: #ff9a9a; /* error color default */
+  font-size: 13px;
 }
 
-.auth-card h1 {
-  margin-bottom: 20px;
-  font-size: 1.8em;
-  text-shadow: 0 0 10px #0ff;
-}
-
-.auth-card input {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid #0ff;
-  background: rgba(0,0,0,0.4);
-  color: #fff;
-  font-size: 1em;
-  outline: none;
-}
-
-.auth-card button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: #00ffff;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.auth-card button:hover {
-  background: #4facfe;
-  color: #fff;
-  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-}
-
-.switch-text {
-  margin-top: 10px;
-  font-size: 0.9em;
-  color: #0ff;
-}
-
-.switch-text a {
-  color: #fff;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* -------------------- Main Chat Container -------------------- */
-.container {
+/* form layout - vertical stacked */
+.auth-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 90%;
-  max-width: 700px;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.auth-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  color: #dff7ff;
+  outline: none;
+  font-size: 14px;
+}
+.auth-form input::placeholder { color: #8eaeb5; }
+
+.auth-form button {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg,#1a9fff,#00e0ff);
+  color: #011;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,160,255,0.12);
+}
+.auth-form button:hover{
+  transform: translateY(-2px);
+}
+
+/* small help text */
+.switch-text {
+  color: #9fbfc7;
+  font-size: 13px;
+  margin-top: 6px;
+}
+.switch-text a { color: #8ff0ff; text-decoration: none; cursor: pointer; }
+.switch-text a:hover { text-decoration: underline; }
+
+/* ======================= Main Chat Container ======================= */
+.container {
+  z-index: 5;
+  position: relative;
+  width: 92%;
+  max-width: 920px;     /* wider per your request */
+  min-width: 540px;     /* prevents too-narrow */
   padding: 30px;
-  background: rgba(20,20,30,0.85);
-  border-radius: 25px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.5);
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid #00ffff;
-}
-
-/* Titles */
-.title {
-  font-size: 2em;
-  margin-bottom: 10px;
-  text-shadow: 0 0 10px #0ff;
-}
-
-.subtitle {
-  font-size: 1.2em;
-  color: #0ff;
-  margin-bottom: 20px;
-}
-
-/* -------------------- Chat Box -------------------- */
-.chat-box {
-  width: 100%;
-  max-height: 450px;
-  overflow-y: auto;
-  margin-bottom: 15px;
+  border-radius: 18px;
+  background: rgba(12,12,14,0.9);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.7), 0 8px 40px rgba(0,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.02);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 15px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 20px;
+  align-items: center;
+  backdrop-filter: blur(6px);
+}
+
+/* subtle light behind the chat area */
+.container::before{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 60%;
+  background: radial-gradient(ellipse at center, rgba(0,255,255,0.03), transparent 30%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Titles */
+.title { margin: 0; font-size: 22px; color: #dffcff; z-index: 1; }
+.subtitle { margin: 0; color: #9fbfc7; z-index: 1; }
+
+/* ======================= Chat Box ======================= */
+.chat-box {
+  z-index: 1;
+  width: 100%;
+  max-height: 520px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;             /* more spacing between messages */
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: inset 0 20px 60px rgba(255,255,255,0.01), inset 0 -20px 60px rgba(0,0,0,0.2);
   scroll-behavior: smooth;
 }
 
-/* -------------------- Messages as Speech Bubbles -------------------- */
+/* ======================= Speech bubbles (dark) ======================= */
 .message {
-  padding: 14px 20px;
-  border-radius: 25px;
-  max-width: 70%;
-  line-height: 1.5;
-  word-wrap: break-word;
   position: relative;
-  animation: fadeIn 0.3s ease forwards;
-  box-shadow: 0 0 15px rgba(0,255,255,0.5), 0 0 30px rgba(0,255,255,0.3);
+  padding: 16px 22px;
+  border-radius: 20px;
+  max-width: 86%;
+  line-height: 1.6;
+  word-break: break-word;
+  z-index: 2;
+  animation: bubbleIn .22s ease;
 }
 
-/* User messages */
+/* user bubble (right) */
 .user {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: #000;
   align-self: flex-end;
-  border-bottom-right-radius: 5px;
-  margin-left: auto;
-  text-shadow: 0 0 5px #00f2fe;
-  box-shadow: 0 0 10px #4facfe, 0 0 20px #00f2fe, 0 0 30px #00f2fe;
+  background: linear-gradient(180deg, #131313, #1b1b1b);
+  color: #9ffeff;              /* nice readable highlight */
+  border: 1px solid rgba(0,255,255,0.06);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.6),
+    0 0 28px rgba(0,255,255,0.06),
+    0 0 8px rgba(0,255,255,0.05) inset;
+  margin-left: 8%;
 }
 
-.user::after {
-  content: '';
+/* ai bubble (left) */
+.ai {
+  align-self: flex-start;
+  background: linear-gradient(180deg, #1a1a1a, #262626);
+  color: #c6fbf9;            /* brighter text for AI */
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.6),
+    0 0 18px rgba(255,255,255,0.02) inset;
+  margin-right: 8%;
+}
+
+/* tiny tail triangles */
+.user::after{
+  content: "";
   position: absolute;
-  bottom: 0;
-  right: -10px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #4facfe;
+  bottom: 6px;
+  right: -8px;
+  width: 0; height: 0;
+  border-top: 10px solid rgba(26,26,26,1);
   border-left: 10px solid transparent;
 }
-
-/* AI messages */
-.ai {
-  background: #f0f0f0;
-  color: #000;
-  align-self: flex-start;
-  border-bottom-left-radius: 5px;
-  margin-right: auto;
-  text-shadow: 0 0 3px #fff;
-  box-shadow: 0 0 10px #fff, 0 0 20px #f0f0f0, 0 0 30px #f0f0f0;
-}
-
-.ai::after {
-  content: '';
+.ai::after{
+  content: "";
   position: absolute;
-  bottom: 0;
-  left: -10px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid #f0f0f0;
+  bottom: 6px;
+  left: -8px;
+  width: 0; height: 0;
+  border-top: 10px solid rgba(34,34,34,1);
   border-right: 10px solid transparent;
 }
 
-/* Fade-in animation */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-10px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* bubble entrance */
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* -------------------- Input & Button -------------------- */
-textarea {
-  width: 90%;
-  height: 50px;
-  margin: 10px 0;
+/* ======================= Typing indicator dots (while fetching) ======================= */
+.typing {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.typing .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(160, 255, 255, 0.95);
+  opacity: 0.15;
+  animation: dotBlink 1.2s infinite;
+}
+.typing .dot:nth-child(2){ animation-delay: 0.18s; }
+.typing .dot:nth-child(3){ animation-delay: 0.36s; }
+@keyframes dotBlink {
+  0% { transform: translateY(0); opacity: 0.12; }
+  40% { transform: translateY(-5px); opacity: 0.95; }
+  80% { transform: translateY(0); opacity: 0.12; }
+}
+
+/* ======================= Input and send button ======================= */
+.input-row {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+textarea#userInput {
+  width: calc(100% - 130px);
+  min-width: 260px;
+  max-width: calc(100% - 120px);
+  height: 62px;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #0ff;
-  background: rgba(0,0,0,0.4);
-  color: #fff;
-  font-size: 1em;
+  background: rgba(15,15,16,0.8);
+  color: #bffeff;
+  border: 1px solid rgba(255,255,255,0.03);
   resize: none;
   outline: none;
+  font-size: 14px;
 }
-
-.send-btn {
-  width: 90%;
-  max-width: 200px;
+button#send-btn {
+  width: 110px;
+  padding: 12px;
   border-radius: 12px;
   border: none;
-  background: #00ffff;
-  color: #000;
-  padding: 12px;
-  font-size: 1em;
+  background: linear-gradient(90deg,#00d4ff,#00a7ff);
+  color: #001;
+  font-weight: 700;
   cursor: pointer;
-  margin-bottom: 10px;
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 26px rgba(0,167,255,0.12);
 }
+button#send-btn:hover{ transform: translateY(-3px); }
 
-.send-btn:hover {
-  background: #4facfe;
-  color: #fff;
-  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-  transform: scale(1.05);
-}
-
-/* -------------------- About Section -------------------- */
-.about {
-  margin-top: 20px;
-  text-align: left;
-  width: 100%;
-  background: rgba(0,0,0,0.5);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #0ff;
-  text-shadow: 0 0 5px #0ff;
-}
-
-/* -------------------- Side Blobs -------------------- */
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.6;
-  z-index: 0;
-  animation: floatBlob 25s ease-in-out infinite;
-}
-
-.blob.left {
-  width: 300px;
-  height: 300px;
-  background: #ff00ff;
-  top: 50%;
-  left: -150px;
-}
-
-.blob.right {
-  width: 300px;
-  height: 300px;
-  background: #00ffff;
-  bottom: 50%;
-  right: -150px;
-}
-
-@keyframes floatBlob {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(80px) rotate(180deg); }
-}
-
-/* -------------------- Background Animation -------------------- */
-@keyframes gradientBG {
-  0%,100% {background-position:0% 50%}
-  50% {background-position:100% 50%}
+/* ======================= Responsive tweaks ======================= */
+@media (max-width: 720px){
+  .container { min-width: auto; max-width: 92%; padding: 18px; }
+  .chat-box { padding: 12px; gap: 14px; }
+  textarea#userInput { width: calc(100% - 110px); height: 52px; }
+  .auth-card { width: 92%; padding: 20px; }
 }
