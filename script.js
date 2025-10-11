@@ -1,20 +1,23 @@
-// ===== Simple local "database" using localStorage =====
-
-// Secret admin login
+// ====== CONFIG ======
 const ADMIN_USERNAME = "ayushadmin";
 const ADMIN_PASSWORD = "maxver";
 
-// Check if a user is already logged in
-window.onload = function () {
+// ====== ON LOAD ======
+window.addEventListener("load", () => {
   const loggedInUser = localStorage.getItem("loggedInUser");
-  if (loggedInUser) {
-    showChat();
-  } else {
-    showSignup();
-  }
-};
 
-// ====== SIGN UP ======
+  // Show intro screen for 3s before continuing
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    if (loggedInUser) {
+      showChat();
+    } else {
+      showSignup();
+    }
+  }, 3000);
+});
+
+// ====== SIGNUP ======
 function signup() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
@@ -27,9 +30,9 @@ function signup() {
 
   const users = JSON.parse(localStorage.getItem("users")) || [];
 
-  // Check if user already exists
-  if (users.some((u) => u.username === username)) {
-    showMessage("Username already exists. Please login instead.", "error");
+  // Check duplicate
+  if (users.some(u => u.username === username)) {
+    showMessage("Username already exists. Please login.", "error");
     return;
   }
 
@@ -57,7 +60,7 @@ function login() {
   }
 
   const users = JSON.parse(localStorage.getItem("users")) || [];
-  const user = users.find((u) => u.username === username && u.password === password);
+  const user = users.find(u => u.username === username && u.password === password);
 
   if (user) {
     localStorage.setItem("loggedInUser", username);
@@ -73,7 +76,7 @@ function logout() {
   location.reload();
 }
 
-// ====== Show sections ======
+// ====== DISPLAY CONTROLS ======
 function showSignup() {
   document.getElementById("auth-container").style.display = "flex";
   document.getElementById("signup-form").style.display = "block";
@@ -93,43 +96,74 @@ function showChat() {
   document.getElementById("main-content").style.display = "flex";
   document.getElementById("chatBox").innerHTML = "";
   showMessage(`Welcome back!`, "success");
+
+  // Add logout button in top-right
+  if (!document.getElementById("logout-btn")) {
+    const logoutBtn = document.createElement("button");
+    logoutBtn.id = "logout-btn";
+    logoutBtn.textContent = "Logout";
+    logoutBtn.onclick = logout;
+    logoutBtn.style.position = "absolute";
+    logoutBtn.style.top = "15px";
+    logoutBtn.style.right = "15px";
+    logoutBtn.style.padding = "8px 15px";
+    logoutBtn.style.borderRadius = "10px";
+    logoutBtn.style.border = "none";
+    logoutBtn.style.background = "linear-gradient(90deg, #ff4b2b, #ff416c)";
+    logoutBtn.style.color = "#fff";
+    logoutBtn.style.cursor = "pointer";
+    logoutBtn.style.fontWeight = "600";
+    document.body.appendChild(logoutBtn);
+  }
 }
 
-// ====== Show message ======
+// ====== MESSAGE FEEDBACK ======
 function showMessage(message, type) {
   const msg = document.getElementById("auth-message");
   msg.textContent = message;
-  msg.style.color = type === "error" ? "#ff5f5f" : "#6cff9e";
+  msg.style.color = type === "error" ? "#ff4d4d" : "#6cff9e";
   msg.style.opacity = "1";
-  setTimeout(() => (msg.style.opacity = "0"), 3000);
+  setTimeout(() => (msg.style.opacity = "0"), 2500);
 }
 
-// ====== AI Chat Functionality ======
+// ====== AI CHAT FUNCTION ======
 function sendMessage() {
   const input = document.getElementById("userInput");
-  const message = input.value.trim();
-  if (message === "") return;
+  const text = input.value.trim();
+  if (!text) return;
 
   const chatBox = document.getElementById("chatBox");
 
+  // Add user message
   const userMsg = document.createElement("div");
   userMsg.className = "chat-message user";
-  userMsg.innerText = message;
+  userMsg.innerText = text;
   chatBox.appendChild(userMsg);
 
   input.value = "";
-
-  setTimeout(() => {
-    const aiMsg = document.createElement("div");
-    aiMsg.className = "chat-message ai";
-    aiMsg.innerText = "🤖 Thinking...";
-    chatBox.appendChild(aiMsg);
-
-    setTimeout(() => {
-      aiMsg.innerText = `You said: "${message}" — that’s quite interesting! 😄`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }, 1000);
-  }, 500);
-
   chatBox.scrollTop = chatBox.scrollHeight;
+
+  // AI "thinking"
+  const aiMsg = document.createElement("div");
+  aiMsg.className = "chat-message ai";
+  aiMsg.innerHTML = "🤖 Thinking...";
+  chatBox.appendChild(aiMsg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Simulated AI response
+  setTimeout(() => {
+    const responses = [
+      `That's interesting! Tell me more.`,
+      `I like how you think! 😄`,
+      `Good question. Let's explore that further.`,
+      `Hmm... I’d say it depends on how you look at it.`,
+      `🤔 Fascinating! Want to dive deeper?`
+    ];
+    const reply = responses[Math.floor(Math.random() * responses.length)];
+
+    aiMsg.innerHTML = `<p>${reply}</p>`;
+    aiMsg.style.whiteSpace = "pre-line";
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 1000);
 }
