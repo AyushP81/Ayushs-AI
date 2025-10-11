@@ -4,7 +4,7 @@
 // #intro, .auth-container, .auth-card, #signup-form, #login-form, #auth-message
 // #main-content, #chatBox, #userInput, #send-btn
 
-const BACKEND_URL = "YOUR_BACKEND_URL_HERE"; // <-- replace with your real backend URL
+const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev"; // <-- replace with your real backend URL
 
 // DOM refs
 const introEl = document.getElementById("intro");
@@ -246,3 +246,4 @@ userInput.addEventListener("keydown", (e) => {
     sendMessage();
   }
 });
+
