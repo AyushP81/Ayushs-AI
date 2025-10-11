@@ -24,7 +24,7 @@ function toggleForms() {
   }
 }
 
-function signup() {
+async function signup() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value.trim();
@@ -34,42 +34,59 @@ function signup() {
     return;
   }
 
-  localStorage.setItem("user", JSON.stringify({ username, email, password }));
-  showMainContent();
+  try {
+    const res = await fetch("/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password })
+    });
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+    } else {
+      alert(data.success);
+      showMainContent();
+    }
+  } catch (err) {
+    alert("⚠️ Error connecting to server.");
+  }
 }
 
-function login() {
+async function login() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value.trim();
-  const storedUser = JSON.parse(localStorage.getItem("user"));
 
-  // Secret admin login
-  if (username === "admin" && password === "admin123") {
-    showMainContent();
+  if (!username || !password) {
+    alert("Please fill in all fields.");
     return;
   }
 
-  if (!storedUser) {
-    alert("No account found. Please sign up first.");
-    return;
-  }
-
-  if (storedUser.username === username && storedUser.password === password) {
-    showMainContent();
-  } else {
-    alert("Incorrect username or password.");
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+    } else {
+      alert(data.success);
+      showMainContent();
+    }
+  } catch (err) {
+    alert("⚠️ Error connecting to server.");
   }
 }
 
 function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
-  document.getElementById("main-content").style.display = "flex";
+  document.getElementById("main-content").style.display = "block";
 }
 
 // === CHAT SYSTEM ===
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
-
 document.getElementById("send-btn").addEventListener("click", sendMessage);
 
 async function sendMessage() {
@@ -79,53 +96,40 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
-  showTyping();
+  // Show typing indicator
+  const typingMsg = addMessage("...", "ai", true);
 
   try {
-    const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
+    const res = await fetch("/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message })
     });
-
-    const data = await response.json();
-    removeTyping();
-
-    const aiText = data?.response || "⚠️ Could not get a response.";
-    showTypingEffect(aiText);
-
-  } catch (error) {
-    removeTyping();
-    addMessage("⚠️ Could not connect to server.", "ai");
-    console.error(error);
+    const data = await res.json();
+    if (data.reply) {
+      chatBox.removeChild(typingMsg);
+      showTypingEffect(data.reply);
+    } else {
+      chatBox.removeChild(typingMsg);
+      showTypingEffect("⚠️ Error: No response from AI.");
+    }
+  } catch (err) {
+    chatBox.removeChild(typingMsg);
+    showTypingEffect("⚠️ Error: Could not connect to backend.");
   }
 }
 
-// === MESSAGES ===
-function addMessage(text, sender) {
+function addMessage(text, sender, isTyping = false) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
   msg.innerText = text;
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
+  if (isTyping) msg.classList.add("typing");
+  return msg;
 }
 
-// === TYPING INDICATOR ===
-function showTyping() {
-  const typingDiv = document.createElement("div");
-  typingDiv.id = "typing";
-  typingDiv.classList.add("message", "ai");
-  typingDiv.textContent = "🤖 Ayush’s AI is typing...";
-  chatBox.appendChild(typingDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function removeTyping() {
-  const typingDiv = document.getElementById("typing");
-  if (typingDiv) typingDiv.remove();
-}
-
-// === AI TYPING EFFECT + READ MORE / COLLAPSE ===
+// === AI Typing Effect + "Read More" ===
 function showTypingEffect(fullText) {
   const msg = document.createElement("div");
   msg.classList.add("message", "ai");
@@ -145,7 +149,7 @@ function showTypingEffect(fullText) {
       chatBox.scrollTop = chatBox.scrollHeight;
       setTimeout(type, typingSpeed);
     } else {
-      // Add Read More if text is long
+      // Add Read More button if text is long
       if (fullText.length > 400) {
         const shortText = fullText.slice(0, 400) + "...";
         textContainer.textContent = shortText;
