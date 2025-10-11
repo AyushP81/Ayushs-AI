@@ -15,16 +15,18 @@
   </div>
 
   <!-- Authentication Container -->
-  <div class="auth-container">
+  <div class="auth-container" id="auth-container">
     <h1>Ayush's AI</h1>
 
+    <!-- Sign-Up Form -->
     <div id="signup-form">
       <input type="text" id="signup-username" placeholder="Username">
-      <input type="email" id="signup-email" placeholder="Email">
       <input type="password" id="signup-password" placeholder="Password">
+      <input type="email" id="signup-email" placeholder="Email">
       <button onclick="signup()">Sign Up</button>
     </div>
 
+    <!-- Login Form -->
     <div id="login-form" style="display: none;">
       <input type="text" id="login-username" placeholder="Username">
       <input type="password" id="login-password" placeholder="Password">
@@ -51,13 +53,18 @@
     </div>
   </div>
 
+  <!-- Side Blobs -->
+  <div class="blob left"></div>
+  <div class="blob right"></div>
+
   <script src="script.js"></script>
   <script>
-    // Intro animation
+    // Show intro then auth container
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
-      document.querySelector(".auth-container").style.display = "flex";
+      document.getElementById("auth-container").style.display = "flex";
     }, 4000);
   </script>
+
 </body>
 </html>
