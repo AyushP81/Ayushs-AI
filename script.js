@@ -2,15 +2,11 @@ const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("send-btn");
 
-// Secret admin credentials
-const ADMIN_USER = "ayushadmin";
-const ADMIN_PASS = "supersecret123";
-
-// Append messages
+// Append user/AI messages
 function appendMessage(sender, message) {
   const msgDiv = document.createElement("div");
   msgDiv.classList.add("message", sender);
-  msgDiv.innerHTML = `<strong>${sender === "user" ? "🧑‍💻 You" : "🤖 Ayush’s AI"}:</strong> ${message}`;
+  msgDiv.innerHTML = `<strong>${sender==="user"?"🧑‍💻 You":"🤖 Ayush’s AI"}:</strong> ${message}`;
   chatBox.appendChild(msgDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -30,21 +26,20 @@ function removeTyping() {
   if (typingDiv) typingDiv.remove();
 }
 
-// Send message to backend
+// Send user message to backend
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
 
   appendMessage("user", message);
   userInput.value = "";
-
   showTyping();
 
   try {
     const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ message })
     });
 
     const data = await response.json();
@@ -58,13 +53,16 @@ async function sendMessage() {
 
 sendBtn.addEventListener("click", sendMessage);
 
-// Signup
+// -------------------- Signup & Login --------------------
+const SECRET_ADMIN = { username: "ayushadmin", password: "supersecret" };
+
 async function signup() {
   const username = document.getElementById("signup-username").value;
   const password = document.getElementById("signup-password").value;
   const email = document.getElementById("signup-email").value;
 
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
+  // Auto-login for secret admin
+  if(username===SECRET_ADMIN.username && password===SECRET_ADMIN.password) {
     loginSuccess();
     return;
   }
@@ -72,6 +70,33 @@ async function signup() {
   const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({username, email, password})
+    body: JSON.stringify({ username, password, email })
   });
-  const data = await
+  const data = await res.json();
+  document.getElementById("auth-message").innerText = data.error || data.success;
+  if(data.success) loginSuccess();
+}
+
+async function login() {
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+
+  if(username===SECRET_ADMIN.username && password===SECRET_ADMIN.password) {
+    loginSuccess();
+    return;
+  }
+
+  const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  document.getElementById("auth-message").innerText = data.error || data.success;
+  if(data.success) loginSuccess();
+}
+
+function loginSuccess() {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("main-content").style.display = "flex";
+}
