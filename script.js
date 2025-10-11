@@ -1,38 +1,17 @@
-// Elements
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("send-btn");
-const authMessage = document.getElementById("auth-message");
 
-const signupForm = document.getElementById("signup-form");
-const loginForm = document.getElementById("login-form");
-const authContainer = document.getElementById("auth-container");
-const mainContent = document.getElementById("main-content");
-
-let chat_history = [];
-
-// Check if first-time user
-window.onload = () => {
-  const isReturning = localStorage.getItem("ayush_ai_user");
-  if (isReturning) {
-    signupForm.style.display = "none";
-    loginForm.style.display = "flex";
-  } else {
-    signupForm.style.display = "flex";
-    loginForm.style.display = "none";
-  }
-};
-
-// Append messages to chat
+// Append user/AI messages
 function appendMessage(sender, message) {
   const msgDiv = document.createElement("div");
   msgDiv.classList.add("message", sender);
   msgDiv.innerHTML = `<strong>${sender === "user" ? "🧑‍💻 You" : "🤖 Ayush’s AI"}:</strong> ${message}`;
   chatBox.appendChild(msgDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop = chatBox.scrollHeight; 
 }
 
-// Show typing animation
+// Typing animation
 function showTyping() {
   const typingDiv = document.createElement("div");
   typingDiv.id = "typing";
@@ -41,26 +20,29 @@ function showTyping() {
   chatBox.appendChild(typingDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
-
 function removeTyping() {
   const typingDiv = document.getElementById("typing");
   if (typingDiv) typingDiv.remove();
 }
 
-// Send chat message
+// Chat message
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
+
   appendMessage("user", message);
   userInput.value = "";
   showTyping();
 
   try {
-    const response = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ message })
-    });
+    const response = await fetch(
+      "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      }
+    );
     const data = await response.json();
     removeTyping();
     appendMessage("ai", data.reply || "⚠️ Error: Could not get response.");
@@ -72,72 +54,51 @@ async function sendMessage() {
 
 sendBtn.addEventListener("click", sendMessage);
 
-// SIGNUP
+// Sign Up
 async function signup() {
-  const username = document.getElementById("signup-username").value;
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
+    const username = document.getElementById("signup-username").value;
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
 
-  if (!username || !email || !password) {
-    authMessage.innerText = "⚠️ Please fill all fields.";
-    return;
-  }
+    if (!username || !email || !password) {
+      document.getElementById("auth-message").innerText = "⚠️ Fill all fields!";
+      return;
+    }
 
-  try {
     const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({username, email, password})
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, email, password})
     });
     const data = await res.json();
+    document.getElementById("auth-message").innerText = data.error || data.success;
 
-    if (data.success) {
-      localStorage.setItem("ayush_ai_user", username);
-      authContainer.style.display = "none";
-      mainContent.style.display = "flex";
-    } else {
-      authMessage.innerText = data.error || "⚠️ Signup failed.";
-    }
-  } catch (err) {
-    authMessage.innerText = "⚠️ Could not connect to server.";
-  }
+    if (data.success) showChat();
 }
 
-// LOGIN
+// Login
 async function login() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
 
-  if (!username || !password) {
-    authMessage.innerText = "⚠️ Please fill all fields.";
-    return;
-  }
+    if (!username || !password) {
+      document.getElementById("auth-message").innerText = "⚠️ Fill all fields!";
+      return;
+    }
 
-  try {
     const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({username, password})
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
     });
     const data = await res.json();
+    document.getElementById("auth-message").innerText = data.error || data.success;
 
-    if (data.success) {
-      localStorage.setItem("ayush_ai_user", username);
-      authContainer.style.display = "none";
-      mainContent.style.display = "flex";
-    } else {
-      authMessage.innerText = data.error || "⚠️ Login failed.";
-    }
-  } catch (err) {
-    authMessage.innerText = "⚠️ Could not connect to server.";
-  }
+    if (data.success) showChat();
 }
 
-
-
-
-
-
-
-
-
+// Show chat container
+function showChat() {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("main-content").style.display = "flex";
+}
