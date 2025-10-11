@@ -2,14 +2,15 @@
 html, body {
   height: 100%;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  background: linear-gradient(135deg, #1f1c2c, #302b63, #0f0c29);
-  background-size: 400% 400%;
-  animation: gradientBG 20s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(-45deg, #1a1a2e, #0f0c29, #302b63, #1f1c2c);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
   color: #fff;
+  overflow-x: hidden;
 }
 
 /* -------------------- Intro Screen -------------------- */
@@ -27,19 +28,15 @@ html, body {
 }
 
 .intro-logo {
-  width: 250px;
+  width: 50%;
+  max-width: 400px;
   opacity: 0;
-  animation: drawIn 2.5s ease forwards;
+  animation: drawIn 3s ease forwards;
 }
 
 @keyframes drawIn {
-  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(5px);}
-  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0);}
-}
-
-@keyframes gradientBG {
-  0%,100% {background-position:0% 50%}
-  50% {background-position:100% 50%}
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
 }
 
 /* -------------------- Auth Container -------------------- */
@@ -47,45 +44,43 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   min-height: 100vh;
+  width: 100%;
 }
 
 .auth-card {
-  background: rgba(20,20,30,0.9);
-  border: 2px solid #00ffff;
-  border-radius: 20px;
+  background: rgba(20, 20, 30, 0.9);
   padding: 40px 50px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.4);
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.5), 0 0 80px rgba(0,255,255,0.2);
   text-align: center;
   width: 350px;
+  backdrop-filter: blur(10px);
+  border: 1px solid #00ffff;
 }
 
 .auth-card h1 {
   margin-bottom: 20px;
-  color: #00ffff;
+  font-size: 1.8em;
+  text-shadow: 0 0 10px #0ff;
 }
 
 .auth-card input {
   display: block;
   width: 100%;
-  margin: 10px 0;
-  padding: 12px 15px;
+  padding: 12px;
+  margin-bottom: 15px;
   border-radius: 10px;
-  border: 1px solid #00ffff;
-  background: rgba(0,0,0,0.2);
+  border: 1px solid #0ff;
+  background: rgba(0,0,0,0.4);
   color: #fff;
   font-size: 1em;
   outline: none;
 }
 
-.auth-card input::placeholder {
-  color: #ccc;
-}
-
 .auth-card button {
-  margin-top: 15px;
-  padding: 12px 20px;
+  width: 100%;
+  padding: 12px;
   border-radius: 12px;
   border: none;
   background: #00ffff;
@@ -96,20 +91,21 @@ html, body {
 }
 
 .auth-card button:hover {
-  background: #0ff;
-  box-shadow: 0 0 15px #0ff;
+  background: #4facfe;
+  color: #fff;
+  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
 }
 
-.auth-card .switch-text {
-  margin-top: 15px;
+.switch-text {
+  margin-top: 10px;
   font-size: 0.9em;
-  color: #ccc;
+  color: #0ff;
 }
 
-.auth-card .switch-text a {
-  color: #0ff;
-  cursor: pointer;
+.switch-text a {
+  color: #fff;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /* -------------------- Main Chat Container -------------------- */
@@ -117,24 +113,28 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 95%;
+  width: 90%;
   max-width: 700px;
   padding: 30px;
-  background: rgba(20,20,30,0.9);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.4);
+  background: rgba(20,20,30,0.85);
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(0,255,255,0.5);
   text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid #00ffff;
 }
 
+/* Titles */
 .title {
   font-size: 2em;
   margin-bottom: 10px;
-  color: #0ff;
+  text-shadow: 0 0 10px #0ff;
 }
 
 .subtitle {
+  font-size: 1.2em;
+  color: #0ff;
   margin-bottom: 20px;
-  color: #ccc;
 }
 
 /* -------------------- Chat Box -------------------- */
@@ -142,66 +142,87 @@ html, body {
   width: 100%;
   max-height: 450px;
   overflow-y: auto;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 15px;
   background: rgba(0,0,0,0.2);
-  border-radius: 15px;
-  margin-bottom: 15px;
+  border-radius: 20px;
   scroll-behavior: smooth;
 }
 
-/* -------------------- Messages -------------------- */
+/* -------------------- Messages as Speech Bubbles -------------------- */
 .message {
-  padding: 12px 18px;
-  border-radius: 15px;
+  padding: 14px 20px;
+  border-radius: 25px;
   max-width: 70%;
   line-height: 1.5;
   word-wrap: break-word;
+  position: relative;
   animation: fadeIn 0.3s ease forwards;
+  box-shadow: 0 0 15px rgba(0,255,255,0.5), 0 0 30px rgba(0,255,255,0.3);
 }
 
+/* User messages */
 .user {
-  background: linear-gradient(135deg,#00ffff,#4a90e2);
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
   color: #000;
   align-self: flex-end;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 5px;
+  margin-left: auto;
+  text-shadow: 0 0 5px #00f2fe;
+  box-shadow: 0 0 10px #4facfe, 0 0 20px #00f2fe, 0 0 30px #00f2fe;
 }
 
+.user::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #4facfe;
+  border-left: 10px solid transparent;
+}
+
+/* AI messages */
 .ai {
-  background: rgba(255,255,255,0.9);
+  background: #f0f0f0;
   color: #000;
   align-self: flex-start;
-  border-bottom-left-radius: 0;
+  border-bottom-left-radius: 5px;
+  margin-right: auto;
+  text-shadow: 0 0 3px #fff;
+  box-shadow: 0 0 10px #fff, 0 0 20px #f0f0f0, 0 0 30px #f0f0f0;
 }
 
-/* Typing dots */
-.dots span {
-  animation: blink 1s infinite;
+.ai::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-top: 10px solid #f0f0f0;
+  border-right: 10px solid transparent;
 }
 
-.dots span:nth-child(2){ animation-delay: 0.2s; }
-.dots span:nth-child(3){ animation-delay: 0.4s; }
-
-@keyframes blink {
-  0%,20%,100% {opacity: 0;}
-  10% {opacity: 1;}
-}
-
+/* Fade-in animation */
 @keyframes fadeIn {
-  0% {opacity:0; transform:translateY(-10px);}
-  100% {opacity:1; transform:translateY(0);}
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* -------------------- Input & Button -------------------- */
 textarea {
   width: 90%;
   height: 50px;
-  padding: 10px;
+  margin: 10px 0;
+  padding: 12px;
   border-radius: 12px;
   border: 1px solid #0ff;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.4);
   color: #fff;
   font-size: 1em;
   resize: none;
@@ -209,30 +230,71 @@ textarea {
 }
 
 .send-btn {
-  margin-top: 10px;
-  padding: 12px 25px;
+  width: 90%;
+  max-width: 200px;
   border-radius: 12px;
   border: none;
-  background: #0ff;
+  background: #00ffff;
   color: #000;
+  padding: 12px;
+  font-size: 1em;
   cursor: pointer;
-  font-weight: bold;
+  margin-bottom: 10px;
   transition: all 0.3s ease;
 }
 
 .send-btn:hover {
-  background: #0ff;
-  box-shadow: 0 0 15px #0ff;
+  background: #4facfe;
+  color: #fff;
+  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
   transform: scale(1.05);
 }
 
 /* -------------------- About Section -------------------- */
 .about {
-  margin-top: 25px;
-  padding: 15px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 12px;
-  border: 1px solid #0ff;
+  margin-top: 20px;
   text-align: left;
   width: 100%;
+  background: rgba(0,0,0,0.5);
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #0ff;
+  text-shadow: 0 0 5px #0ff;
+}
+
+/* -------------------- Side Blobs -------------------- */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.6;
+  z-index: 0;
+  animation: floatBlob 25s ease-in-out infinite;
+}
+
+.blob.left {
+  width: 300px;
+  height: 300px;
+  background: #ff00ff;
+  top: 50%;
+  left: -150px;
+}
+
+.blob.right {
+  width: 300px;
+  height: 300px;
+  background: #00ffff;
+  bottom: 50%;
+  right: -150px;
+}
+
+@keyframes floatBlob {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(80px) rotate(180deg); }
+}
+
+/* -------------------- Background Animation -------------------- */
+@keyframes gradientBG {
+  0%,100% {background-position:0% 50%}
+  50% {background-position:100% 50%}
 }
