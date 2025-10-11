@@ -1,249 +1,167 @@
-// -------------------- Main JS for Ayush's AI frontend --------------------
-
-// IDs used in your HTML:
-// #intro, .auth-container, .auth-card, #signup-form, #login-form, #auth-message
-// #main-content, #chatBox, #userInput, #send-btn
-
-const BACKEND_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev"; // <-- replace with your real backend URL
-
-// DOM refs
-const introEl = document.getElementById("intro");
-const authContainer = document.getElementById("auth-container");
-const signupForm = document.getElementById("signup-form");
-const loginForm = document.getElementById("login-form");
-const authMessage = document.getElementById("auth-message");
-const mainContent = document.getElementById("main-content");
-const chatBox = document.getElementById("chatBox");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("send-btn");
-
-// secret admin login (bypass backend)
-const ADMIN = { username: "admin", password: "admin123" };
-
-// ---------------- Intro handling ----------------
+// === INTRO ANIMATION ===
 window.addEventListener("load", () => {
-  // If already logged in, skip intro quickly
-  const loggedUser = localStorage.getItem("loggedInUser");
-  if (loggedUser) {
-    // hide intro immediately and show chat
-    introEl.style.opacity = "0";
-    introEl.style.display = "none";
-    showMain();
-    return;
-  }
-
-  // otherwise show intro for 3s then reveal auth
+  const intro = document.getElementById("intro");
   setTimeout(() => {
-    introEl.style.opacity = "0";
+    intro.style.opacity = "0";
     setTimeout(() => {
-      introEl.style.display = "none";
-      authContainer.style.display = "flex";
-      // default to signup visible
-      signupForm.style.display = "flex";
-      loginForm.style.display = "none";
-    }, 700);
-  }, 3000);
+      intro.style.display = "none";
+      document.getElementById("auth-container").style.display = "flex";
+    }, 1000);
+  }, 1500);
 });
 
-// ---------------- Form switching ----------------
+// === AUTH SYSTEM ===
 function toggleForms() {
-  if (signupForm.style.display === "none" || signupForm.style.display === "") {
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
+
+  if (signupForm.style.display === "none") {
     signupForm.style.display = "flex";
     loginForm.style.display = "none";
-    authMessage.textContent = "";
   } else {
     signupForm.style.display = "none";
     loginForm.style.display = "flex";
-    authMessage.textContent = "";
   }
 }
 
-// allow the toggleForms to be used by the links in HTML
-window.toggleForms = toggleForms;
-
-// ---------------- Signup / Login ----------------
-async function signup() {
-  const username = document.getElementById("signup-username").value.trim();
-  const email = document.getElementById("signup-email").value.trim();
+function signup() {
+  const username = document.getElementById("signup-username").value;
+  const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
 
   if (!username || !email || !password) {
-    authMessage.style.color = "#ff9a9a";
-    authMessage.textContent = "⚠️ Please fill in all fields.";
+    alert("Please fill in all fields.");
     return;
   }
 
-  // admin shortcut (for testing)
-  if (username === ADMIN.username && password === ADMIN.password) {
-    localStorage.setItem("loggedInUser", username);
-    showMain();
-    return;
-  }
-
-  // If you have a backend signup endpoint, call it here.
-  // For now, we store locally (demo only).
-  try {
-    // --- Demo local save (replace with backend call if needed) ---
-    localStorage.setItem("demo_user_username", username);
-    localStorage.setItem("demo_user_email", email);
-    localStorage.setItem("demo_user_password", password);
-
-    localStorage.setItem("loggedInUser", username);
-    authMessage.style.color = "#9fffbf";
-    authMessage.textContent = "✅ Signed up successfully.";
-    setTimeout(showMain, 600);
-  } catch (err) {
-    authMessage.style.color = "#ff9a9a";
-    authMessage.textContent = "⚠️ Signup failed.";
-  }
+  localStorage.setItem("user", JSON.stringify({ username, email, password }));
+  showMainContent();
 }
-window.signup = signup;
 
-async function login() {
-  const username = document.getElementById("login-username").value.trim();
+function login() {
+  const username = document.getElementById("login-username").value;
   const password = document.getElementById("login-password").value;
+  const storedUser = JSON.parse(localStorage.getItem("user"));
 
-  if (!username || !password) {
-    authMessage.style.color = "#ff9a9a";
-    authMessage.textContent = "⚠️ Please fill in all fields.";
+  // Secret admin login
+  if (username === "admin" && password === "admin123") {
+    showMainContent();
     return;
   }
 
-  // admin shortcut
-  if (username === ADMIN.username && password === ADMIN.password) {
-    localStorage.setItem("loggedInUser", username);
-    showMain();
+  if (!storedUser) {
+    alert("No account found. Please sign up first.");
     return;
   }
 
-  // demo local check (replace with backend call)
-  const stored = localStorage.getItem("demo_user_username");
-  const storedPw = localStorage.getItem("demo_user_password");
-  if (stored && username === stored && password === storedPw) {
-    localStorage.setItem("loggedInUser", username);
-    authMessage.style.color = "#9fffbf";
-    authMessage.textContent = "✅ Login successful";
-    setTimeout(showMain, 500);
-    return;
+  if (storedUser.username === username && storedUser.password === password) {
+    showMainContent();
+  } else {
+    alert("Incorrect username or password.");
   }
-
-  // if you have backend login endpoint, call it:
-  // try {
-  //   const res = await fetch(`${BACKEND_URL}/login`, {...});
-  //   ...
-  // } catch(err){ ... }
-
-  authMessage.style.color = "#ff9a9a";
-  authMessage.textContent = "⚠️ Invalid username or password.";
-}
-window.login = login;
-
-// ---------------- show main (chat) ----------------
-function showMain() {
-  authContainer.style.display = "none";
-  mainContent.style.display = "flex";
-  chatBox.innerHTML = ""; // clear old messages
-  // optional welcome message
-  appendAI("Hey! I'm Ayush's AI — how can I help?");
 }
 
-// ---------------- Chat helpers ----------------
-function appendUser(text) {
-  const d = document.createElement("div");
-  d.className = "message user";
-  d.textContent = text;
-  chatBox.appendChild(d);
-  chatBox.scrollTop = chatBox.scrollHeight;
+function showMainContent() {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
 }
 
-function appendAIDots() {
-  const d = document.createElement("div");
-  d.className = "message ai";
-  // keep container empty for typing dots
-  const dots = document.createElement("div");
-  dots.className = "typing";
-  dots.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
-  d.appendChild(dots);
-  chatBox.appendChild(d);
-  chatBox.scrollTop = chatBox.scrollHeight;
-  return d; // return the placeholder element so we can remove it later
-}
+// === CHAT SYSTEM ===
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
 
-function appendAI(text) {
-  const d = document.createElement("div");
-  d.className = "message ai";
-  chatBox.appendChild(d);
-  typewriter(d, text);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+document.getElementById("send-btn").addEventListener("click", sendMessage);
 
-// typewriter: types characters one by one into element
-function typewriter(element, text, charDelay = 18) {
-  element.innerHTML = ""; // start empty
-  const title = document.createElement("strong");
-  title.textContent = "🤖 Ayush’s AI: ";
-  element.appendChild(title);
-  const span = document.createElement("span");
-  element.appendChild(span);
+function sendMessage() {
+  const message = userInput.value.trim();
+  if (!message) return;
 
-  let i = 0;
-  function step() {
-    if (i < text.length) {
-      span.textContent += text.charAt(i);
-      i++;
-      chatBox.scrollTop = chatBox.scrollHeight;
-      setTimeout(step, charDelay);
-    }
-  }
-  step();
-}
-
-// ---------------- sendMessage (calls backend) ----------------
-async function sendMessage() {
-  const text = userInput.value.trim();
-  if (!text) return;
-
-  // append user
-  appendUser(text);
+  addMessage(message, "user");
   userInput.value = "";
 
-  // show typing indicator
-  const typingPlaceholder = appendAIDots();
-
-  // send to backend
-  try {
-    const res = await fetch(`${BACKEND_URL}/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text }),
-    });
-
-    // If backend returns non-JSON or errors, handle gracefully
-    const data = await (res.ok ? res.json() : Promise.reject(new Error("Bad response")));
-    // remove dots
-    typingPlaceholder.remove();
-
-    // If your backend returns `.reply` or `.message`, adapt here:
-    const reply = data.reply ?? data.message ?? data.output ?? "⚠️ No reply.";
-    appendAI(String(reply));
-
-  } catch (err) {
-    // Remove dots and show error
-    typingPlaceholder.remove();
-    appendAI("⚠️ Could not connect to the server. Try again.");
-    console.error("Chat error:", err);
-  }
+  setTimeout(() => {
+    getAIResponse(message);
+  }, 1000);
 }
-window.sendMessage = sendMessage;
 
-// send on button
-sendBtn.addEventListener("click", sendMessage);
+function addMessage(text, sender) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.innerText = text;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-// send on Enter
-userInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
+function getAIResponse(userMessage) {
+  let response = "";
+
+  if (userMessage.toLowerCase().includes("hello")) {
+    response = "Hi there! 😊 How can I assist you today?";
+  } else if (userMessage.toLowerCase().includes("artificial intelligence")) {
+    response = `
+Artificial Intelligence (AI) is the simulation of human intelligence in machines. 
+It allows computers to learn, reason, and make decisions.
+
+AI is used in:
+- Self-driving cars 🚗
+- Virtual assistants (like Siri or Alexa)
+- Recommendation systems (Netflix, YouTube)
+- Healthcare and robotics 🤖
+
+Would you like to learn about how AI *learns* or how it’s *used* in daily life?
+    `;
+  } else {
+    response = "I'm still learning 🧠, but I’ll try my best to help you!";
   }
-});
 
+  showTypingEffect(response);
+}
+
+// === AI Typing Effect + "Read More" Toggle ===
+function showTypingEffect(fullText) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", "ai");
+
+  const textContainer = document.createElement("span");
+  msg.appendChild(textContainer);
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  let index = 0;
+  const typingSpeed = 20;
+
+  function type() {
+    if (index < fullText.length) {
+      textContainer.textContent += fullText.charAt(index);
+      index++;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      setTimeout(type, typingSpeed);
+    } else {
+      // Add Read More if text is long
+      if (fullText.length > 400) {
+        const shortText = fullText.slice(0, 400) + "...";
+        textContainer.textContent = shortText;
+
+        const readMore = document.createElement("button");
+        readMore.textContent = "Read More";
+        readMore.classList.add("read-more");
+
+        let expanded = false;
+        readMore.onclick = () => {
+          if (!expanded) {
+            textContainer.textContent = fullText;
+            readMore.textContent = "Collapse";
+            expanded = true;
+          } else {
+            textContainer.textContent = shortText;
+            readMore.textContent = "Read More";
+            expanded = false;
+          }
+        };
+
+        msg.appendChild(readMore);
+      }
+    }
+  }
+  type();
+}
