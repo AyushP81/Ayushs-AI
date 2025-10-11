@@ -4,44 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush's AI 🤖</title>
-  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Auth Container -->
-  <div id="auth-container" class="auth-container">
-    <h1>Ayush's AI</h1>
+  <!-- Intro Screen -->
+  <div id="intro">
+    <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
+  </div>
 
-    <!-- Sign Up Form -->
-    <div id="signup-form" class="form">
-      <h2>Sign Up</h2>
+  <!-- Authentication Container -->
+  <div class="auth-container" id="auth-container">
+    <h1 id="auth-title">Ayush's AI Sign Up</h1>
+
+    <div id="signup-form">
       <input type="text" id="signup-username" placeholder="Username">
       <input type="email" id="signup-email" placeholder="Email">
       <input type="password" id="signup-password" placeholder="Password">
       <button onclick="signup()">Sign Up</button>
     </div>
 
-    <!-- Login Form -->
-    <div id="login-form" class="form" style="display:none;">
-      <h2>Login</h2>
+    <div id="login-form" style="display:none;">
       <input type="text" id="login-username" placeholder="Username">
       <input type="password" id="login-password" placeholder="Password">
       <button onclick="login()">Login</button>
     </div>
 
-    <p id="auth-message" class="auth-message"></p>
+    <p id="auth-message"></p>
   </div>
 
   <!-- Main Chat Container -->
   <div id="main-content" class="container" style="display: none;">
     <h1 class="title">Welcome to Ayush's AI 🤖</h1>
+    <p class="subtitle">Type a message below to chat!</p>
+
     <div id="chatBox" class="chat-box"></div>
+
     <textarea id="userInput" placeholder="Type your message..." 
       onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
     <button id="send-btn" class="play">Send</button>
+
+    <div class="about">
+      <h2>About Me</h2>
+      <p> I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming.</p>
+    </div>
   </div>
 
+  <!-- Side Blobs -->
+  <div class="blob left"></div>
+  <div class="blob right"></div>
+
   <script src="script.js"></script>
+  <script>
+    // Show chat after intro
+    setTimeout(() => {
+      document.getElementById("intro").style.display = "none";
+      // Check if first time user
+      if (!localStorage.getItem("firstTime")) {
+        document.getElementById("auth-container").style.display = "flex";
+        localStorage.setItem("firstTime", "true");
+      } else {
+        document.getElementById("auth-container").style.display = "flex";
+        document.getElementById("signup-form").style.display = "none";
+        document.getElementById("login-form").style.display = "flex";
+        document.getElementById("auth-title").innerText = "Ayush's AI Login";
+      }
+    }, 4000); // intro duration
+  </script>
+
 </body>
 </html>
