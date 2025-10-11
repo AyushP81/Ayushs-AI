@@ -1,67 +1,135 @@
-const chatBox = document.getElementById("chatBox");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("send-btn");
+// ===== Simple local "database" using localStorage =====
 
-function appendMessage(sender, message) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", sender);
-  msg.textContent = message;
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// Secret admin login
+const ADMIN_USERNAME = "ayushadmin";
+const ADMIN_PASSWORD = "maxver";
+
+// Check if a user is already logged in
+window.onload = function () {
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  if (loggedInUser) {
+    showChat();
+  } else {
+    showSignup();
+  }
+};
+
+// ====== SIGN UP ======
+function signup() {
+  const username = document.getElementById("signup-username").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value.trim();
+
+  if (!username || !email || !password) {
+    showMessage("Please fill in all fields.", "error");
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  // Check if user already exists
+  if (users.some((u) => u.username === username)) {
+    showMessage("Username already exists. Please login instead.", "error");
+    return;
+  }
+
+  users.push({ username, email, password });
+  localStorage.setItem("users", JSON.stringify(users));
+  showMessage("Signup successful! Please log in.", "success");
+  showLogin();
 }
 
-async function sendMessage() {
-  const message = userInput.value.trim();
-  if (!message) return;
-  appendMessage("user", message);
-  userInput.value = "";
+// ====== LOGIN ======
+function login() {
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value.trim();
 
-  try {
-    const res = await fetch("https://your-backend-url/chat", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ message })
-    });
-    const data = await res.json();
-    appendMessage("ai", data.reply || "⚠️ No response from AI.");
-  } catch {
-    appendMessage("ai", "⚠️ Error connecting to server.");
+  if (!username || !password) {
+    showMessage("Please fill in all fields.", "error");
+    return;
+  }
+
+  // Admin instant login
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    localStorage.setItem("loggedInUser", ADMIN_USERNAME);
+    showChat();
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find((u) => u.username === username && u.password === password);
+
+  if (user) {
+    localStorage.setItem("loggedInUser", username);
+    showChat();
+  } else {
+    showMessage("Invalid username or password.", "error");
   }
 }
 
-sendBtn.addEventListener("click", sendMessage);
-
-// Auth System
-async function signup() {
-  const username = document.getElementById("signup-username").value;
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
-
-  const res = await fetch("https://your-backend-url/signup", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ username, email, password })
-  });
-  const data = await res.json();
-  document.getElementById("auth-message").innerText = data.error || data.success;
-  if (data.success) showChat();
+// ====== LOGOUT ======
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  location.reload();
 }
 
-async function login() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
+// ====== Show sections ======
+function showSignup() {
+  document.getElementById("auth-container").style.display = "flex";
+  document.getElementById("signup-form").style.display = "block";
+  document.getElementById("login-form").style.display = "none";
+  document.getElementById("main-content").style.display = "none";
+}
 
-  const res = await fetch("https://your-backend-url/login", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ username, password })
-  });
-  const data = await res.json();
-  document.getElementById("auth-message").innerText = data.error || data.success;
-  if (data.success) showChat();
+function showLogin() {
+  document.getElementById("auth-container").style.display = "flex";
+  document.getElementById("signup-form").style.display = "none";
+  document.getElementById("login-form").style.display = "block";
+  document.getElementById("main-content").style.display = "none";
 }
 
 function showChat() {
   document.getElementById("auth-container").style.display = "none";
   document.getElementById("main-content").style.display = "flex";
+  document.getElementById("chatBox").innerHTML = "";
+  showMessage(`Welcome back!`, "success");
+}
+
+// ====== Show message ======
+function showMessage(message, type) {
+  const msg = document.getElementById("auth-message");
+  msg.textContent = message;
+  msg.style.color = type === "error" ? "#ff5f5f" : "#6cff9e";
+  msg.style.opacity = "1";
+  setTimeout(() => (msg.style.opacity = "0"), 3000);
+}
+
+// ====== AI Chat Functionality ======
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (message === "") return;
+
+  const chatBox = document.getElementById("chatBox");
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "chat-message user";
+  userMsg.innerText = message;
+  chatBox.appendChild(userMsg);
+
+  input.value = "";
+
+  setTimeout(() => {
+    const aiMsg = document.createElement("div");
+    aiMsg.className = "chat-message ai";
+    aiMsg.innerText = "🤖 Thinking...";
+    chatBox.appendChild(aiMsg);
+
+    setTimeout(() => {
+      aiMsg.innerText = `You said: "${message}" — that’s quite interesting! 😄`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 1000);
+  }, 500);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
