@@ -1,169 +1,109 @@
-// ====== CONFIG ======
-const ADMIN_USERNAME = "ayushadmin";
-const ADMIN_PASSWORD = "maxver";
+function toggleForms() {
+  const signup = document.getElementById("signup-form");
+  const login = document.getElementById("login-form");
+  signup.style.display = signup.style.display === "none" ? "block" : "none";
+  login.style.display = login.style.display === "none" ? "block" : "none";
+}
 
-// ====== ON LOAD ======
+// Load intro
 window.addEventListener("load", () => {
-  const loggedInUser = localStorage.getItem("loggedInUser");
-
-  // Show intro screen for 3s before continuing
   setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
-    if (loggedInUser) {
-      showChat();
-    } else {
-      showSignup();
-    }
-  }, 3000);
+    const intro = document.getElementById("intro");
+    intro.style.opacity = "0";
+    setTimeout(() => {
+      intro.style.display = "none";
+      const user = localStorage.getItem("loggedInUser");
+      if (user) showChat();
+      else document.getElementById("auth-container").style.display = "flex";
+    }, 1000);
+  }, 2500);
 });
 
-// ====== SIGNUP ======
-function signup() {
+// Sign up
+async function signup() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value.trim();
+  if (!username || !email || !password) return alert("Fill all fields!");
 
-  if (!username || !email || !password) {
-    showMessage("Please fill in all fields.", "error");
-    return;
+  // Secret admin auto login
+  if (username === "admin" && password === "ayush123") {
+    localStorage.setItem("loggedInUser", username);
+    return showChat();
   }
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-
-  // Check duplicate
-  if (users.some(u => u.username === username)) {
-    showMessage("Username already exists. Please login.", "error");
-    return;
-  }
-
-  users.push({ username, email, password });
-  localStorage.setItem("users", JSON.stringify(users));
-  showMessage("Signup successful! Please log in.", "success");
-  showLogin();
-}
-
-// ====== LOGIN ======
-function login() {
-  const username = document.getElementById("login-username").value.trim();
-  const password = document.getElementById("login-password").value.trim();
-
-  if (!username || !password) {
-    showMessage("Please fill in all fields.", "error");
-    return;
-  }
-
-  // Admin instant login
-  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-    localStorage.setItem("loggedInUser", ADMIN_USERNAME);
-    showChat();
-    return;
-  }
-
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const user = users.find(u => u.username === username && u.password === password);
-
-  if (user) {
+  const res = await fetch("https://YOUR_BACKEND_URL/signup", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({username, email, password})
+  });
+  const data = await res.json();
+  document.getElementById("auth-message").innerText = data.success || data.error;
+  if (data.success) {
     localStorage.setItem("loggedInUser", username);
     showChat();
-  } else {
-    showMessage("Invalid username or password.", "error");
   }
 }
 
-// ====== LOGOUT ======
-function logout() {
-  localStorage.removeItem("loggedInUser");
-  location.reload();
+// Login
+async function login() {
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+  if (!username || !password) return alert("Fill all fields!");
+
+  if (username === "admin" && password === "ayush123") {
+    localStorage.setItem("loggedInUser", username);
+    return showChat();
+  }
+
+  const res = await fetch("https://YOUR_BACKEND_URL/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({username, password})
+  });
+  const data = await res.json();
+  document.getElementById("auth-message").innerText = data.success || data.error;
+  if (data.success) {
+    localStorage.setItem("loggedInUser", username);
+    showChat();
+  }
 }
 
-// ====== DISPLAY CONTROLS ======
-function showSignup() {
-  document.getElementById("auth-container").style.display = "flex";
-  document.getElementById("signup-form").style.display = "block";
-  document.getElementById("login-form").style.display = "none";
-  document.getElementById("main-content").style.display = "none";
-}
-
-function showLogin() {
-  document.getElementById("auth-container").style.display = "flex";
-  document.getElementById("signup-form").style.display = "none";
-  document.getElementById("login-form").style.display = "block";
-  document.getElementById("main-content").style.display = "none";
-}
-
+// Show chat
 function showChat() {
   document.getElementById("auth-container").style.display = "none";
   document.getElementById("main-content").style.display = "flex";
-  document.getElementById("chatBox").innerHTML = "";
-  showMessage(`Welcome back!`, "success");
-
-  // Add logout button in top-right
-  if (!document.getElementById("logout-btn")) {
-    const logoutBtn = document.createElement("button");
-    logoutBtn.id = "logout-btn";
-    logoutBtn.textContent = "Logout";
-    logoutBtn.onclick = logout;
-    logoutBtn.style.position = "absolute";
-    logoutBtn.style.top = "15px";
-    logoutBtn.style.right = "15px";
-    logoutBtn.style.padding = "8px 15px";
-    logoutBtn.style.borderRadius = "10px";
-    logoutBtn.style.border = "none";
-    logoutBtn.style.background = "linear-gradient(90deg, #ff4b2b, #ff416c)";
-    logoutBtn.style.color = "#fff";
-    logoutBtn.style.cursor = "pointer";
-    logoutBtn.style.fontWeight = "600";
-    document.body.appendChild(logoutBtn);
-  }
 }
 
-// ====== MESSAGE FEEDBACK ======
-function showMessage(message, type) {
-  const msg = document.getElementById("auth-message");
-  msg.textContent = message;
-  msg.style.color = type === "error" ? "#ff4d4d" : "#6cff9e";
-  msg.style.opacity = "1";
-  setTimeout(() => (msg.style.opacity = "0"), 2500);
+// Chat messages
+function appendMessage(sender, message) {
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("message", sender);
+  msgDiv.innerHTML = `<strong>${sender === "user" ? "You" : "AI"}:</strong> ${message}`;
+  document.getElementById("chatBox").appendChild(msgDiv);
+  document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
 }
 
-// ====== AI CHAT FUNCTION ======
-function sendMessage() {
+// Send message
+async function sendMessage() {
   const input = document.getElementById("userInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  const chatBox = document.getElementById("chatBox");
-
-  // Add user message
-  const userMsg = document.createElement("div");
-  userMsg.className = "chat-message user";
-  userMsg.innerText = text;
-  chatBox.appendChild(userMsg);
-
+  const message = input.value.trim();
+  if (!message) return;
+  appendMessage("user", message);
   input.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
 
-  // AI "thinking"
-  const aiMsg = document.createElement("div");
-  aiMsg.className = "chat-message ai";
-  aiMsg.innerHTML = "🤖 Thinking...";
-  chatBox.appendChild(aiMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  // Simulated AI response
-  setTimeout(() => {
-    const responses = [
-      `That's interesting! Tell me more.`,
-      `I like how you think! 😄`,
-      `Good question. Let's explore that further.`,
-      `Hmm... I’d say it depends on how you look at it.`,
-      `🤔 Fascinating! Want to dive deeper?`
-    ];
-    const reply = responses[Math.floor(Math.random() * responses.length)];
-
-    aiMsg.innerHTML = `<p>${reply}</p>`;
-    aiMsg.style.whiteSpace = "pre-line";
-
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }, 1000);
+  appendMessage("ai", "Typing...");
+  try {
+    const res = await fetch("https://YOUR_BACKEND_URL/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message})
+    });
+    const data = await res.json();
+    document.querySelector(".ai:last-child").remove();
+    appendMessage("ai", data.reply || "⚠️ Error from AI.");
+  } catch {
+    document.querySelector(".ai:last-child").remove();
+    appendMessage("ai", "⚠️ Could not connect to server.");
+  }
 }
