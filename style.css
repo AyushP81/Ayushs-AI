@@ -1,11 +1,10 @@
-
 /* -------------------- General Body -------------------- */
 html, body {
   height: 100%;
   margin: 0;
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
+  justify-content: center;
+  align-items: center;
   font-family: 'Orbitron', sans-serif;
   background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1f1c2c);
   background-size: 400% 400%;
@@ -14,12 +13,7 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Hide Replit footer/iframe */
-iframe[src*="replit"], footer, .replit-footer, .replit-credit {
-  display: none !important;
-}
-
-/* -------------------- Intro Screen -------------------- */
+/* Intro Screen */
 #intro {
   position: fixed;
   top: 0;
@@ -35,7 +29,6 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   z-index: 1000;
   text-align: center;
 }
-
 .intro-logo {
   width: 60%;
   max-width: 500px;
@@ -44,25 +37,14 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   animation: drawIn 3s ease forwards;
 }
 
-/* Logo Animation */
-@keyframes drawIn {
-  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
-  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
-}
-
-/* Fade Out Animation */
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-
-/* -------------------- Main Container -------------------- */
+/* Main Container */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 95%;         /* wider container */
-  max-width: 700px;   /* expanded max width */
-  min-width: 500px;   /* prevents being too narrow */
+  width: 95%;
+  max-width: 700px;
+  min-width: 500px;
   padding: 30px;
   background: rgba(20, 20, 30, 0.85);
   border-radius: 20px;
@@ -73,36 +55,23 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   z-index: 1;
 }
 
-/* Titles and Subtitles */
-.title {
-  font-size: 2.5em;
-  text-shadow: 0 0 10px #00ffff;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 1.2em;
-  color: #0ff;
-  margin-bottom: 20px;
-}
-
-/* -------------------- Chat Box -------------------- */
+/* Chat Box */
 .chat-box {
   width: 100%;
-  max-height: 400px;  /* taller for more chat visibility */
+  max-height: 400px;
   overflow-y: auto;
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: center; /* center messages */
+  align-items: center;
   padding: 10px;
   background: rgba(0,0,0,0.2);
   border-radius: 15px;
   scroll-behavior: smooth;
 }
 
-/* -------------------- Messages -------------------- */
+/* Messages */
 .message {
   padding: 12px 18px;
   margin: 5px 0;
@@ -112,8 +81,6 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   word-wrap: break-word;
   animation: fadeIn 0.3s ease forwards;
 }
-
-/* User messages (right) */
 .user {
   background: linear-gradient(135deg, #00ffff, #4a90e2);
   color: #000;
@@ -122,8 +89,6 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   border-bottom-right-radius: 0;
   box-shadow: 0 0 10px #00ffff;
 }
-
-/* AI messages (left) */
 .ai {
   background: linear-gradient(135deg, #e2e2e2, #b0b0b0);
   color: #000;
@@ -133,21 +98,9 @@ iframe[src*="replit"], footer, .replit-footer, .replit-credit {
   box-shadow: 0 0 10px #0ff;
 }
 
-/* Typing animation */
-.typing {
-  font-style: italic;
-  opacity: 0.7;
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* -------------------- Input & Button -------------------- */
+/* Input & Button */
 textarea {
-  width: 90%;        /* wider input */
+  width: 90%;
   height: 50px;
   margin: 10px 0;
   padding: 10px;
@@ -159,9 +112,8 @@ textarea {
   resize: none;
   outline: none;
 }
-
 button.play {
-  width: 90%;         /* matches textarea */
+  width: 90%;
   max-width: 200px;
   border: 1px solid #0ff;
   padding: 12px 25px;
@@ -172,7 +124,6 @@ button.play {
   transition: all 0.3s ease;
   font-size: 1em;
 }
-
 button.play:hover {
   background: #00ffff;
   color: #000;
@@ -180,69 +131,7 @@ button.play:hover {
   transform: scale(1.05);
 }
 
-/* -------------------- About Section -------------------- */
-.about {
-  margin-top: 30px;
-  text-align: left;
-  width: 100%;
-  background: rgba(0,0,0,0.5);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #0ff;
-  text-shadow: 0 0 5px #0ff;
-}
-
-/* -------------------- Side Blobs -------------------- */
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.6;
-  z-index: 0;
-  animation: floatBlob 25s ease-in-out infinite;
-}
-
-.blob.left {
-  width: 300px;
-  height: 300px;
-  background: #ff00ff;
-  top: 50%;
-  left: -150px;
-}
-
-.blob.right {
-  width: 300px;
-  height: 300px;
-  background: #00ffff;
-  bottom: 50%;
-  right: -150px;
-}
-
-@keyframes floatBlob {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(80px) rotate(180deg); }
-}
-
-/* -------------------- Background Animation -------------------- */
-@keyframes gradientBG {
-  0%,100% {background-position:0% 50%}
-  50% {background-position:100% 50%}
-}
-
-.dots span {
-  animation: blink 1s infinite;
-}
-.dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-@keyframes blink {
-  0%, 20%, 100% { opacity: 0; }
-  10% { opacity: 1; }
-}
-
+/* Auth Container */
 .auth-container {
   display: flex;
   flex-direction: column;
@@ -270,7 +159,17 @@ button.play:hover {
   background-color: #45a049;
 }
 
+/* Animations */
+@keyframes drawIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
+}
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+@keyframes fadeIn { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes gradientBG { 0%,100% {background-position:0% 50%} 50% {background-position:100% 50%} }
 
-
-
-
+/* Side Blobs */
+.blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.6; z-index: 0; animation: floatBlob 25s ease-in-out infinite; }
+.blob.left { width: 300px; height: 300px; background: #ff00ff; top: 50%; left: -150px; }
+.blob.right { width: 300px; height: 300px; background: #00ffff; bottom: 50%; right: -150px; }
+@keyframes floatBlob { 0%,100% { transform: translateY
