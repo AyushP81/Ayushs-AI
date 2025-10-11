@@ -5,63 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush's AI 🤖</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Intro Screen -->
+  <!-- Intro -->
   <div id="intro">
     <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
   </div>
 
-  <!-- Authentication Container -->
-  <div class="auth-container" id="auth-container">
-    <h1>Ayush's AI</h1>
+  <!-- Auth Container -->
+  <div id="auth-container" class="auth-container">
+    <h1>Welcome to Ayush’s AI</h1>
+    <p class="subtitle">Sign up or log in to continue</p>
 
-    <div id="signup-form">
-      <input type="text" id="signup-username" placeholder="Username">
-      <input type="password" id="signup-password" placeholder="Password">
-      <input type="email" id="signup-email" placeholder="Email">
-      <button onclick="signup()">Sign Up</button>
-    </div>
+    <div class="card">
+      <!-- Signup Form -->
+      <div id="signup-form" class="auth-form">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+      </div>
 
-    <div id="login-form">
-      <input type="text" id="login-username" placeholder="Username">
-      <input type="password" id="login-password" placeholder="Password">
-      <button onclick="login()">Login</button>
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
     </div>
 
     <p id="auth-message"></p>
   </div>
 
-  <!-- Main Chat Container -->
+  <!-- Chat Section -->
   <div id="main-content" class="container" style="display: none;">
-    <h1 class="title">Welcome to Ayush's AI 🤖</h1>
-    <p class="subtitle">Type a message below to chat!</p>
+    <h1 class="title">Ayush’s AI 🤖</h1>
+    <p class="subtitle">Type your message below</p>
 
     <div id="chatBox" class="chat-box"></div>
 
-    <textarea id="userInput" placeholder="Type your message..." 
-      onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
+    <textarea id="userInput" placeholder="Type a message..." 
+      onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
     <button id="send-btn" class="play">Send</button>
 
     <div class="about">
       <h2>About Me</h2>
-      <p>I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming.</p>
+      <p>I'm Ayush Padaruth, a tech enthusiast who loves building AI projects and exploring coding.</p>
     </div>
   </div>
 
-  <!-- Side Blobs -->
-  <div class="blob left"></div>
-  <div class="blob right"></div>
-
   <script src="script.js"></script>
   <script>
-    // Show chat after intro
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
       document.getElementById("auth-container").style.display = "flex";
-    }, 4000); // intro duration
+    }, 2000);
   </script>
 </body>
 </html>
