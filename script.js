@@ -1,132 +1,150 @@
-// -------------------- Initial Setup --------------------
-window.onload = () => {
-  const username = localStorage.getItem("username");
+// -------------------- DOM Elements --------------------
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("send-btn");
+const authContainer = document.getElementById("auth-container");
+const mainContent = document.getElementById("main-content");
+const authMessage = document.getElementById("auth-message");
 
-  // If user is already logged in, skip intro/auth
-  if (username) {
+// Secret admin login
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+// -------------------- Intro & Auth --------------------
+window.addEventListener("load", () => {
+  setTimeout(() => {
     document.getElementById("intro").style.display = "none";
-    showChat();
-  } else {
-    // Show intro for 4 seconds then show auth container
-    setTimeout(() => {
-      document.getElementById("intro").style.display = "none";
-      document.getElementById("auth-container").style.display = "flex";
-    }, 4000);
-  }
-};
+    checkLoginState();
+  }, 3000); // 3 seconds intro
+});
 
-// -------------------- Form Switching --------------------
-function toggleForms() {
-  const signupForm = document.getElementById("signup-form");
-  const loginForm = document.getElementById("login-form");
-  if (signupForm.style.display === "none") {
-    signupForm.style.display = "block";
-    loginForm.style.display = "none";
+function checkLoginState() {
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  if (loggedInUser) {
+    showMainContent();
   } else {
-    signupForm.style.display = "none";
-    loginForm.style.display = "block";
+    authContainer.style.display = "flex";
+    document.getElementById("signup-form").style.display = "block";
+    document.getElementById("login-form").style.display = "none";
   }
 }
 
-// -------------------- Auth Logic --------------------
-// Secret admin login
-const ADMIN = { username: "admin", password: "admin123" };
+function toggleForms() {
+  const signup = document.getElementById("signup-form");
+  const login = document.getElementById("login-form");
+  if (signup.style.display === "block") {
+    signup.style.display = "none";
+    login.style.display = "block";
+  } else {
+    signup.style.display = "block";
+    login.style.display = "none";
+  }
+}
 
+function showMainContent() {
+  authContainer.style.display = "none";
+  mainContent.style.display = "flex";
+}
+
+// -------------------- Signup/Login --------------------
 async function signup() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
-  const password = document.getElementById("signup-password").value.trim();
-  const authMessage = document.getElementById("auth-message");
+  const password = document.getElementById("signup-password").value;
 
   if (!username || !email || !password) {
-    authMessage.innerText = "⚠️ Fill in all fields";
+    authMessage.innerText = "⚠️ Please fill in all fields.";
     return;
   }
 
-  // Save to localStorage for demo (replace with backend DB in production)
-  localStorage.setItem("username", username);
-  localStorage.setItem("email", email);
-  localStorage.setItem("password", password);
+  // Secret admin check
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    localStorage.setItem("loggedInUser", username);
+    showMainContent();
+    return;
+  }
 
-  authMessage.innerText = "✅ Sign-up successful! Redirecting...";
-  setTimeout(showChat, 1000);
+  try {
+    const res = await fetch("YOUR_BACKEND_URL/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      authMessage.innerText = data.success;
+      localStorage.setItem("loggedInUser", username);
+      showMainContent();
+    } else {
+      authMessage.innerText = data.error || "Signup failed.";
+    }
+  } catch (err) {
+    authMessage.innerText = "⚠️ Could not connect to server.";
+  }
 }
 
 async function login() {
   const username = document.getElementById("login-username").value.trim();
-  const password = document.getElementById("login-password").value.trim();
-  const authMessage = document.getElementById("auth-message");
+  const password = document.getElementById("login-password").value;
 
   if (!username || !password) {
-    authMessage.innerText = "⚠️ Fill in all fields";
+    authMessage.innerText = "⚠️ Please fill in all fields.";
     return;
   }
 
-  // Secret admin login
-  if (username === ADMIN.username && password === ADMIN.password) {
-    localStorage.setItem("username", username);
-    authMessage.innerText = "✅ Admin login successful! Redirecting...";
-    setTimeout(showChat, 500);
+  // Secret admin check
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    localStorage.setItem("loggedInUser", username);
+    showMainContent();
     return;
   }
 
-  // Check stored credentials (demo)
-  const storedUsername = localStorage.getItem("username");
-  const storedPassword = localStorage.getItem("password");
-
-  if (username === storedUsername && password === storedPassword) {
-    authMessage.innerText = "✅ Login successful! Redirecting...";
-    setTimeout(showChat, 500);
-  } else {
-    authMessage.innerText = "⚠️ Incorrect username or password";
+  try {
+    const res = await fetch("YOUR_BACKEND_URL/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem("loggedInUser", username);
+      showMainContent();
+    } else {
+      authMessage.innerText = data.error || "Login failed.";
+    }
+  } catch (err) {
+    authMessage.innerText = "⚠️ Could not connect to server.";
   }
 }
 
-// -------------------- Show Chat --------------------
-function showChat() {
-  document.getElementById("auth-container").style.display = "none";
-  document.getElementById("main-content").style.display = "flex";
-}
+// -------------------- Chat --------------------
+let chatHistory = [];
 
-// -------------------- Chat Functionality --------------------
-const chatBox = document.getElementById("chatBox");
-const userInput = document.getElementById("userInput");
-const sendBtn = document.getElementById("send-btn");
-
-// Append messages
 function appendMessage(sender, message) {
   const msgDiv = document.createElement("div");
   msgDiv.classList.add("message", sender);
   chatBox.appendChild(msgDiv);
 
-  // Smooth typing effect
-  let i = 0;
-  function typeWriter() {
-    if (i < message.length) {
-      msgDiv.innerHTML = `<strong>${sender === "user" ? "🧑‍💻 You" : "🤖 Ayush’s AI"}:</strong> ${message.slice(0, i + 1)}`;
-      i++;
-      setTimeout(typeWriter, 20); // typing speed
-    }
+  if (sender === "ai") {
+    typeText(msgDiv, message);
+  } else {
+    msgDiv.innerHTML = `<strong>🧑‍💻 You:</strong> ${message}`;
   }
-  typeWriter();
+
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function showTyping() {
-  const typingDiv = document.createElement("div");
-  typingDiv.id = "typing";
-  typingDiv.classList.add("message", "ai");
-  typingDiv.innerHTML = `<strong>🤖 Ayush’s AI:</strong> <span class="dots">Typing<span>.</span><span>.</span><span>.</span></span>`;
-  chatBox.appendChild(typingDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
+function typeText(element, text) {
+  element.innerHTML = `<strong>🤖 Ayush’s AI:</strong> `;
+  let i = 0;
+  const interval = setInterval(() => {
+    element.innerHTML = `<strong>🤖 Ayush’s AI:</strong> ` + text.substring(0, i);
+    i++;
+    if (i > text.length) clearInterval(interval);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 15); // typing speed
 }
 
-function removeTyping() {
-  const typingDiv = document.getElementById("typing");
-  if (typingDiv) typingDiv.remove();
-}
-
-// Send message
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
@@ -134,25 +152,31 @@ async function sendMessage() {
   appendMessage("user", message);
   userInput.value = "";
 
-  showTyping();
+  const typingDiv = document.createElement("div");
+  typingDiv.classList.add("message", "ai");
+  typingDiv.innerHTML = `<strong>🤖 Ayush’s AI:</strong> <span class="typing">Typing...</span>`;
+  chatBox.appendChild(typingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
   try {
-    const response = await fetch(
-      "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      }
-    );
-
+    const response = await fetch("YOUR_BACKEND_URL/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
     const data = await response.json();
-    removeTyping();
-    appendMessage("ai", data.reply || "⚠️ Could not get a response.");
-  } catch (error) {
-    removeTyping();
-    appendMessage("ai", "⚠️ Could not connect to server.");
+    typingDiv.remove();
+    appendMessage("ai", data.reply || "⚠️ Error: Could not get response.");
+  } catch (err) {
+    typingDiv.remove();
+    appendMessage("ai", "⚠️ Error: Could not connect to server.");
   }
 }
 
 sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
