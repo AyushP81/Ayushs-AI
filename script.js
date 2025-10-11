@@ -34,7 +34,7 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const res = await fetch("YOUR_BACKEND_URL/chat", {
+    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({message})
@@ -55,7 +55,7 @@ async function signup() {
   const password = document.getElementById("signup-password").value;
 
   // replace with your backend
-  const res = await fetch("YOUR_BACKEND_URL/signup", {
+  const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({username,email,password})
@@ -73,7 +73,7 @@ async function login() {
   const username = document.getElementById("login-username").value;
   const password = document.getElementById("login-password").value;
 
-  const res = await fetch("YOUR_BACKEND_URL/login", {
+  const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({username,password})
@@ -87,3 +87,4 @@ async function login() {
     document.getElementById("main-content").style.display="flex";
   }
 }
+
