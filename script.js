@@ -59,6 +59,36 @@ async function sendMessage() {
 sendBtn.addEventListener("click", sendMessage);
 
 
+async function signup() {
+    const username = document.getElementById("signup-username").value;
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+
+    const res = await fetch("YOUR_BACKEND_URL/signup", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, email, password})
+    });
+    const data = await res.json();
+    document.getElementById("auth-message").innerText = data.error || data.success;
+}
+
+async function login() {
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+
+    const res = await fetch("YOUR_BACKEND_URL/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    document.getElementById("auth-message").innerText = data.error || data.success;
+}
+
+
+
+
 
 
 
