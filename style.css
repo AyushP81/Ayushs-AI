@@ -1,6 +1,6 @@
-/* -------------------- General Body -------------------- */
-html, body {
-  height: 100%;
+/* Body & background */
+body {
+  height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -12,7 +12,7 @@ html, body {
   color: #00ffff;
 }
 
-/* -------------------- Intro -------------------- */
+/* Intro Screen */
 #intro {
   position: fixed;
   top: 0; left: 0;
@@ -21,92 +21,92 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
   text-align: center;
+  z-index: 1000;
 }
 
 .intro-logo {
   width: 60%;
-  max-width: 400px;
+  max-width: 500px;
   opacity: 0;
-  animation: drawIn 3s ease forwards;
+  animation: drawIn 3s forwards;
 }
 
+/* Animations */
 @keyframes drawIn {
   from { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(10px); }
   to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0); }
 }
-
 @keyframes gradientBG {
-  0%,100% {background-position:0% 50%} 50% {background-position:100% 50%}
+  0%,100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
 }
 
-/* -------------------- Auth Container -------------------- */
-.auth-container {
+/* Glowing Card Container */
+.auth-container, .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
-  gap: 15px;
-  background: rgba(20,20,30,0.85);
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.5);
-  border: 1px solid #00ffff;
+  width: 400px;
+  padding: 40px 30px;
+  background: rgba(20, 20, 30, 0.9);
+  border-radius: 25px;
+  box-shadow: 0 0 50px rgba(0,255,255,0.5);
+  border: 2px solid #00ffff;
   backdrop-filter: blur(10px);
+  gap: 20px;
+  text-align: center;
 }
 
-.auth-container input {
-  width: 250px;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 8px;
+/* Headings */
+.auth-container h1, .container .title {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #00ffff;
+  text-shadow: 0 0 10px #0ff;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 1.2em;
+  color: #0ff;
+  margin-bottom: 20px;
+}
+
+/* Inputs stacked vertically */
+.auth-container input, textarea {
+  width: 80%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 12px;
   border: 1px solid #0ff;
   background: rgba(0,0,0,0.3);
   color: #00ffff;
   font-size: 1em;
+  outline: none;
 }
 
-.auth-container button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  border-radius: 8px;
+/* Buttons */
+.auth-container button, button.play {
+  width: 60%;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
   background-color: #00ffff;
   color: #000;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.auth-container button:hover {
+.auth-container button:hover, button.play:hover {
   background-color: #4CAF50;
   color: white;
   box-shadow: 0 0 20px #0ff;
 }
 
-/* -------------------- Main Chat Container -------------------- */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 90%;
-  max-width: 700px;
-  min-width: 500px;
-  padding: 30px;
-  background: rgba(20,20,30,0.85);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0,255,255,0.5);
-  border: 1px solid #00ffff;
-  backdrop-filter: blur(10px);
-  text-align: center;
-}
-
-.title { font-size: 2.5em; margin-bottom: 10px; }
-.subtitle { font-size: 1.2em; margin-bottom: 20px; }
-
-/* -------------------- Chat Box -------------------- */
+/* Chat box */
 .chat-box {
   width: 100%;
   max-height: 400px;
@@ -118,56 +118,84 @@ html, body {
   padding: 10px;
   background: rgba(0,0,0,0.2);
   border-radius: 15px;
-  scroll-behavior: smooth;
 }
 
 /* Messages */
 .message {
   padding: 12px 18px;
-  margin: 5px 0;
   border-radius: 20px;
   max-width: 70%;
+  line-height: 1.5;
   word-wrap: break-word;
+  animation: fadeIn 0.3s ease forwards;
 }
 
 .user {
   background: linear-gradient(135deg, #00ffff, #4a90e2);
   color: #000;
   align-self: flex-end;
+  margin-left: auto;
   border-bottom-right-radius: 0;
+  box-shadow: 0 0 10px #00ffff;
 }
 
 .ai {
   background: linear-gradient(135deg, #e2e2e2, #b0b0b0);
   color: #000;
   align-self: flex-start;
+  margin-right: auto;
   border-bottom-left-radius: 0;
+  box-shadow: 0 0 10px #0ff;
 }
 
-textarea {
-  width: 90%; height: 50px;
-  padding: 10px; border-radius: 10px;
-  border: 1px solid #0ff;
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* About Section */
+.about {
+  margin-top: 30px;
+  width: 100%;
   background: rgba(0,0,0,0.5);
-  color: #00ffff;
-  font-size: 1em;
-  resize: none;
-  outline: none;
-}
-
-button.play {
-  width: 90%; max-width: 200px;
+  padding: 15px;
   border-radius: 12px;
   border: 1px solid #0ff;
-  padding: 12px 25px;
-  background: rgba(0,0,0,0.5);
-  color: #00ffff;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  text-align: left;
+  text-shadow: 0 0 5px #0ff;
 }
 
-button.play:hover {
-  background-color: #00ffff;
-  color: #000;
-  box-shadow: 0 0 20px #0ff;
+/* Side blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.6;
+  z-index: 0;
+  animation: floatBlob 25s ease-in-out infinite;
 }
+
+.blob.left {
+  width: 300px; height: 300px;
+  background: #ff00ff;
+  top: 50%; left: -150px;
+}
+
+.blob.right {
+  width: 300px; height: 300px;
+  background: #00ffff;
+  bottom: 50%; right: -150px;
+}
+
+@keyframes floatBlob {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(80px) rotate(180deg); }
+}
+
+/* Typing dots */
+.dots span {
+  animation: blink 1s infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,20%,100% { opacity: 0; } 10% { opacity: 1; } }
