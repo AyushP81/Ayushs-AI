@@ -32,7 +32,7 @@ async function signup() {
     return showChat();
   }
 
-  const res = await fetch("https://YOUR_BACKEND_URL/signup", {
+  const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({username, email, password})
@@ -56,7 +56,7 @@ async function login() {
     return showChat();
   }
 
-  const res = await fetch("https://YOUR_BACKEND_URL/login", {
+  const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({username, password})
@@ -94,7 +94,7 @@ async function sendMessage() {
 
   appendMessage("ai", "Typing...");
   try {
-    const res = await fetch("https://YOUR_BACKEND_URL/chat", {
+    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/chat", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({message})
@@ -107,3 +107,4 @@ async function sendMessage() {
     appendMessage("ai", "⚠️ Could not connect to server.");
   }
 }
+
