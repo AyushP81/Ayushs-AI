@@ -14,14 +14,14 @@
     <img src="logo.png" alt="Ayush's AI Logo" class="intro-logo">
   </div>
 
-  <!-- Auth Container -->
-  <div id="auth-container" class="auth-container">
+  <!-- Authentication Container -->
+  <div class="auth-container" id="auth-container">
     <h1>Ayush's AI</h1>
 
     <div id="signup-form">
       <input type="text" id="signup-username" placeholder="Username">
-      <input type="email" id="signup-email" placeholder="Email">
       <input type="password" id="signup-password" placeholder="Password">
+      <input type="email" id="signup-email" placeholder="Email">
       <button onclick="signup()">Sign Up</button>
     </div>
 
@@ -45,33 +45,23 @@
       onkeydown="if(event.key === 'Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"></textarea>
     <button id="send-btn" class="play">Send</button>
 
-    <button onclick="logout()" style="margin-top: 10px;">Logout</button>
-
     <div class="about">
       <h2>About Me</h2>
       <p>I'm Ayush Padaruth, a tech enthusiast who loves building AI projects, websites, and learning programming.</p>
     </div>
   </div>
 
+  <!-- Side Blobs -->
   <div class="blob left"></div>
   <div class="blob right"></div>
 
   <script src="script.js"></script>
   <script>
-    // Intro animation
+    // Show chat after intro
     setTimeout(() => {
       document.getElementById("intro").style.display = "none";
-
-      // Auto-login check
-      const username = localStorage.getItem("username");
-      if(username) {
-        document.getElementById("auth-container").style.display = "none";
-        document.getElementById("main-content").style.display = "flex";
-      } else {
-        document.getElementById("auth-container").style.display = "flex";
-        document.getElementById("main-content").style.display = "none";
-      }
-    }, 4000);
+      document.getElementById("auth-container").style.display = "flex";
+    }, 4000); // intro duration
   </script>
 </body>
 </html>
