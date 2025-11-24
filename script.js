@@ -39,7 +39,7 @@ async function signup() {
   if (!username || !email || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch(`${BASE_URL}/signup`, {
+    const res = await fetch(`${BASE_URL}/signup2`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password })
@@ -204,5 +204,6 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
