@@ -35,7 +35,7 @@ async function signup() {
   if (!username || !email || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("/signup", {
+    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password })
@@ -54,7 +54,7 @@ async function login() {
   if (!username || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("/login2", {
+    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login2", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -200,3 +200,4 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
