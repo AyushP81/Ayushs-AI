@@ -1,3 +1,7 @@
+
+const BASE_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev";
+
+
 // === INTRO ANIMATION ===
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro");
@@ -35,7 +39,7 @@ async function signup() {
   if (!username || !email || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
+    const res = await fetch(`${BASE_URL}/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password })
@@ -54,7 +58,7 @@ async function login() {
   if (!username || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login2", {
+    const res = await fetch(`${BASE_URL}/login2`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -136,7 +140,7 @@ async function sendMessage() {
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
-      const res = await fetch("/chat", {
+      const res = await fetch(`${BASE_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message })
@@ -200,4 +204,5 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
