@@ -5,10 +5,20 @@ window.addEventListener("load", () => {
     intro.style.opacity = "0";
     setTimeout(() => {
       intro.style.display = "none";
-      document.getElementById("auth-container").style.display = "flex";
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        currentUser = user.username;
+        showMainContent();
+        updateProfileBar();
+      } else {
+        document.getElementById("auth-container").style.display = "flex";
+      }
     }, 1000);
   }, 1500);
 });
+
+// === GLOBAL STATE ===
+let currentUser = null;
 
 // === AUTH SYSTEM ===
 function toggleForms() {
@@ -22,21 +32,17 @@ async function signup() {
   const username = document.getElementById("signup-username").value.trim();
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value.trim();
-
   if (!username || !email || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/signup", {
+    const res = await fetch("/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password })
     });
     const data = await res.json();
     if (data.error) alert(data.error);
-    else {
-      alert(data.success);
-      loginUser(username);
-    }
+    else loginUser(username);
   } catch (err) {
     alert("⚠️ Error connecting to server.");
   }
@@ -45,91 +51,68 @@ async function signup() {
 async function login() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value.trim();
-
-  if (!username || !password) {
-    alert("Please fill in all fields.");
-    return;
-  }
+  if (!username || !password) return alert("Please fill in all fields.");
 
   try {
-    const res = await fetch("https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev/login2", {
+    const res = await fetch("/login2", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-    if (data.error) {
-      alert(data.error);
-    } else {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      showMainContent();
-      updateProfileBar();
-    }
+    if (data.error) alert(data.error);
+    else loginUser(username, data.user_id);
   } catch (err) {
     alert("⚠️ Error connecting to server.");
   }
 }
 
-function updateProfileBar() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user) {
-    document.getElementById("profile-username").textContent = user.username;
-  }
+// === LOGIN & PROFILE ===
+function loginUser(username, userId = null) {
+  currentUser = username;
+  localStorage.setItem("user", JSON.stringify({ username, userId }));
+  showMainContent();
+  updateProfileBar();
 }
 
-document.getElementById("logout-btn").addEventListener("click", () => {
-  localStorage.removeItem("user");
-  document.getElementById("main-content").style.display = "none";
-  document.getElementById("auth-container").style.display = "flex";
-});
-
-window.addEventListener("load", () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user) {
-    showMainContent();
-    updateProfileBar();
-  }
-});
-
-
-// === LOGIN & PROFILE DISPLAY ===
-let currentUser = null;
-
-function loginUser(username) {
-  currentUser = username;
+function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
   document.getElementById("main-content").style.display = "block";
   showProfile();
 }
 
-function showProfile() {
-  const profileContainer = document.getElementById("profile");
-  if (!profileContainer) {
+function updateProfileBar() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
+  let profileBar = document.getElementById("profile");
+  if (!profileBar) {
     const container = document.getElementById("main-content");
-    const profileDiv = document.createElement("div");
-    profileDiv.id = "profile";
-    profileDiv.style.display = "flex";
-    profileDiv.style.justifyContent = "space-between";
-    profileDiv.style.alignItems = "center";
-    profileDiv.style.width = "100%";
-    profileDiv.style.marginBottom = "10px";
+    profileBar = document.createElement("div");
+    profileBar.id = "profile";
+    profileBar.style.display = "flex";
+    profileBar.style.justifyContent = "space-between";
+    profileBar.style.alignItems = "center";
+    profileBar.style.width = "100%";
+    profileBar.style.marginBottom = "10px";
 
     const userText = document.createElement("span");
-    userText.textContent = `Logged in as: ${currentUser}`;
-    profileDiv.appendChild(userText);
+    userText.id = "profile-username";
+    profileBar.appendChild(userText);
 
     const logoutBtn = document.createElement("button");
     logoutBtn.textContent = "Logout";
     logoutBtn.id = "logout-btn";
     logoutBtn.onclick = logout;
-    profileDiv.appendChild(logoutBtn);
+    profileBar.appendChild(logoutBtn);
 
-    container.prepend(profileDiv);
+    container.prepend(profileBar);
   }
+  document.getElementById("profile-username").textContent = `Logged in as: ${user.username}`;
 }
 
 function logout() {
   currentUser = null;
+  localStorage.removeItem("user");
   document.getElementById("main-content").style.display = "none";
   document.getElementById("auth-container").style.display = "flex";
   document.getElementById("chatBox").innerHTML = "";
@@ -143,16 +126,13 @@ document.getElementById("send-btn").addEventListener("click", sendMessage);
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
-
   addMessage(message, "user");
   userInput.value = "";
 
-  // Show typing indicator
   const typingMsg = addMessage("...", "ai", true);
 
   try {
     let reply;
-    // Intercept AI origin question
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
@@ -164,7 +144,6 @@ async function sendMessage() {
       const data = await res.json();
       reply = data.reply || "⚠️ Error: No response from AI.";
     }
-
     chatBox.removeChild(typingMsg);
     showTypingEffect(reply);
   } catch (err) {
@@ -221,5 +200,3 @@ function showTypingEffect(fullText) {
   }
   type();
 }
-
-
