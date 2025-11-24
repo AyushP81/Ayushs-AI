@@ -46,21 +46,51 @@ async function login() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value.trim();
 
-  if (!username || !password) return alert("Please fill in all fields.");
+  if (!username || !password) {
+    alert("Please fill in all fields.");
+    return;
+  }
 
   try {
-    const res = await fetch("/login", {
+    const res = await fetch("YOUR_BACKEND_URL/login2", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-    if (data.error) alert(data.error);
-    else loginUser(username);
+    if (data.error) {
+      alert(data.error);
+    } else {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      showMainContent();
+      updateProfileBar();
+    }
   } catch (err) {
     alert("⚠️ Error connecting to server.");
   }
 }
+
+function updateProfileBar() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    document.getElementById("profile-username").textContent = user.username;
+  }
+}
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.removeItem("user");
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("auth-container").style.display = "flex";
+});
+
+window.addEventListener("load", () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    showMainContent();
+    updateProfileBar();
+  }
+});
+
 
 // === LOGIN & PROFILE DISPLAY ===
 let currentUser = null;
@@ -191,3 +221,4 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
