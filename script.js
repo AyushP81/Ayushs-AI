@@ -5,20 +5,20 @@ const BASE_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.
 // === INTRO ANIMATION ===
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro");
-
   setTimeout(() => {
     intro.style.opacity = "0";
-
     setTimeout(() => {
       intro.style.display = "none";
 
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
+        // restore user info
         currentUser = user.username;
-        currentUserId = user.user_id; // ✅ store user_id too
+        currentUserId = user.user_id;
+
         showMainContent();
         updateProfileBar();
-        loadPreviousMessages(); // ✅ load chat history
+        loadPreviousMessages(); // ✅ load old messages
       } else {
         document.getElementById("auth-container").style.display = "flex";
       }
@@ -76,24 +76,27 @@ async function login() {
   }
 }
 
-async function loadPreviousMessages(userId) {
+async function loadPreviousMessages() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
+
   try {
-    const res = await fetch(`${BASE_URL/messages/history`, {
+    const res = await fetch(`${BASE_URL}/messages/load`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ user1: userId, user2: "ai" })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user.user_id })
     });
     const data = await res.json();
     if (data.messages) {
       data.messages.forEach(msg => {
-        addMessage(msg.message, msg.sender_id === "ai" ? "ai" : "user");
+        const sender = msg.sender_id === user.user_id ? "user" : "ai";
+        addMessage(msg.message, sender);
       });
     }
   } catch (err) {
-    console.error("Failed to load previous messages", err);
+    console.log("⚠️ Could not load previous messages.", err);
   }
 }
-
 
 // === LOGIN & PROFILE ===
 let currentUser = null;
@@ -258,6 +261,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
