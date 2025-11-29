@@ -71,6 +71,25 @@ async function login() {
   }
 }
 
+async function loadPreviousMessages(userId) {
+  try {
+    const res = await fetch("/messages/history", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ user1: userId, user2: "ai" })
+    });
+    const data = await res.json();
+    if (data.messages) {
+      data.messages.forEach(msg => {
+        addMessage(msg.message, msg.sender_id === "ai" ? "ai" : "user");
+      });
+    }
+  } catch (err) {
+    console.error("Failed to load previous messages", err);
+  }
+}
+
+
 // === LOGIN & PROFILE ===
 function loginUser(username, userId = null) {
   currentUser = username;
@@ -204,6 +223,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
