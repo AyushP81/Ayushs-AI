@@ -5,15 +5,20 @@ const BASE_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.
 // === INTRO ANIMATION ===
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro");
+
   setTimeout(() => {
     intro.style.opacity = "0";
+
     setTimeout(() => {
       intro.style.display = "none";
+
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         currentUser = user.username;
+        currentUserId = user.user_id; // ✅ store user_id too
         showMainContent();
         updateProfileBar();
+        loadPreviousMessages(); // ✅ load chat history
       } else {
         document.getElementById("auth-container").style.display = "flex";
       }
@@ -114,28 +119,6 @@ function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
   document.getElementById("main-content").style.display = "block";
   showProfile();
-}
-async function loadPreviousMessages() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return;
-
-  try {
-    const res = await fetch(`$BASE_URL/messages/load`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user.user_id })
-    });
-    const data = await res.json();
-    if (data.messages) {
-      data.messages.forEach(msg => {
-        // Determine if user or AI
-        const sender = msg.sender_id === user.user_id ? "user" : "ai";
-        addMessage(msg.message, sender);
-      });
-    }
-  } catch (err) {
-    console.log("⚠️ Could not load previous messages.", err);
-  }
 }
 
 
@@ -275,6 +258,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
