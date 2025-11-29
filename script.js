@@ -177,25 +177,29 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
+  // Show typing indicator
   const typingMsg = addMessage("...", "ai", true);
 
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-    const user_id = user ? user.user_id : null;
-
-    if (!user_id) {
+    if (!user) {
       chatBox.removeChild(typingMsg);
-      return showTypingEffect("⚠️ Error: You must be logged in to chat.");
+      showTypingEffect("⚠️ Error: You are not logged in.");
+      return;
     }
 
     let reply;
+    // Intercept AI origin question
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
       const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, user_id })
+        body: JSON.stringify({ 
+          message, 
+          user_id: user.user_id   // ✅ send user_id here
+        })
       });
       const data = await res.json();
       reply = data.reply || "⚠️ Error: No response from AI.";
@@ -203,12 +207,12 @@ async function sendMessage() {
 
     chatBox.removeChild(typingMsg);
     showTypingEffect(reply);
-
   } catch (err) {
     chatBox.removeChild(typingMsg);
     showTypingEffect("⚠️ Error: Could not connect to backend.");
   }
 }
+
 
 
 function addMessage(text, sender, isTyping = false) {
@@ -259,6 +263,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
