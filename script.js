@@ -1,8 +1,18 @@
 
-const BASE_URL = "https://c9c8428f-7614-4a94-a4a6-b7ca87e60153-00-1z22thnwna9oh.riker.replit.dev";
+// ========================
+// CONFIG
+// ========================
+const BASE_URL = ""; // leave empty if backend is same origin
 
+// ========================
+// GLOBAL STATE
+// ========================
+let currentUser = null;
+let currentUserId = null;
 
-// === INTRO ANIMATION ===
+// ========================
+// INTRO SCREEN
+// ========================
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro");
   setTimeout(() => {
@@ -12,13 +22,11 @@ window.addEventListener("load", () => {
 
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
-        // restore user info
         currentUser = user.username;
         currentUserId = user.user_id;
-
         showMainContent();
         updateProfileBar();
-        loadPreviousMessages(); // ✅ load old messages
+        loadPreviousMessages();
       } else {
         document.getElementById("auth-container").style.display = "flex";
       }
@@ -26,10 +34,9 @@ window.addEventListener("load", () => {
   }, 1500);
 });
 
-// === GLOBAL STATE ===
-let currentUser = null;
-
-// === AUTH SYSTEM ===
+// ========================
+// AUTH SYSTEM
+// ========================
 function toggleForms() {
   const signupForm = document.getElementById("signup-form");
   const loginForm = document.getElementById("login-form");
@@ -51,7 +58,7 @@ async function signup() {
     });
     const data = await res.json();
     if (data.error) alert(data.error);
-    else loginUser(username);
+    else loginUser(username, data.user_id);
   } catch (err) {
     alert("⚠️ Error connecting to server.");
   }
@@ -76,58 +83,36 @@ async function login() {
   }
 }
 
-async function loadPreviousMessages() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return;
-
-  try {
-    const res = await fetch(`${BASE_URL}/messages/load`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user.user_id })
-    });
-    const data = await res.json();
-    if (data.messages) {
-      data.messages.forEach(msg => {
-        const sender = msg.sender_id === user.user_id ? "user" : "ai";
-        addMessage(msg.message, sender);
-      });
-    }
-  } catch (err) {
-    console.log("⚠️ Could not load previous messages.", err);
-  }
-}
-
-// === LOGIN & PROFILE ===
-let currentUser = null;
-let currentUserId = null;
-
 function loginUser(username, user_id) {
   currentUser = username;
   currentUserId = user_id;
 
-  // Store in localStorage so page reloads keep user logged in
+  // store in localStorage
   localStorage.setItem("user", JSON.stringify({ username, user_id }));
 
+  // show main content
   document.getElementById("auth-container").style.display = "none";
-  document.getElementById("main-content").style.display = "block";
   showMainContent();
-  showProfile();
+  updateProfileBar();
   loadPreviousMessages();
-  // load old messages from DB
 }
 
-
-function showMainContent() {
-  document.getElementById("auth-container").style.display = "none";
-  document.getElementById("main-content").style.display = "block";
-  showProfile();
+function logout() {
+  currentUser = null;
+  currentUserId = null;
+  localStorage.removeItem("user");
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("auth-container").style.display = "flex";
+  document.getElementById("chatBox").innerHTML = "";
 }
 
-
+// ========================
+// PROFILE BAR
+// ========================
 function updateProfileBar() {
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) return;
+
   let profileBar = document.getElementById("profile");
   if (!profileBar) {
     const container = document.getElementById("main-content");
@@ -154,16 +139,15 @@ function updateProfileBar() {
   document.getElementById("profile-username").textContent = `Logged in as: ${user.username}`;
 }
 
-
-function logout() {
-  currentUser = null;
-  localStorage.removeItem("user");
-  document.getElementById("main-content").style.display = "none";
-  document.getElementById("auth-container").style.display = "flex";
-  document.getElementById("chatBox").innerHTML = "";
+function showMainContent() {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
+  updateProfileBar();
 }
 
-// === CHAT SYSTEM ===
+// ========================
+// CHAT SYSTEM
+// ========================
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 document.getElementById("send-btn").addEventListener("click", sendMessage);
@@ -175,7 +159,6 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
-  // Show typing indicator
   const typingMsg = addMessage("...", "ai", true);
 
   try {
@@ -187,17 +170,13 @@ async function sendMessage() {
     }
 
     let reply;
-    // Intercept AI origin question
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
-      const res = await fetch("/chat", {
+      const res = await fetch(`${BASE_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          message, 
-          user_id: user.user_id   // ✅ send user_id here
-        })
+        body: JSON.stringify({ message, user_id: user.user_id })
       });
       const data = await res.json();
       reply = data.reply || "⚠️ Error: No response from AI.";
@@ -211,8 +190,6 @@ async function sendMessage() {
   }
 }
 
-
-
 function addMessage(text, sender, isTyping = false) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -223,7 +200,6 @@ function addMessage(text, sender, isTyping = false) {
   return msg;
 }
 
-// === AI Typing Effect + Read More ===
 function showTypingEffect(fullText) {
   const msg = document.createElement("div");
   msg.classList.add("message", "ai");
@@ -262,8 +238,30 @@ function showTypingEffect(fullText) {
   type();
 }
 
+// ========================
+// LOAD PREVIOUS MESSAGES
+// ========================
+async function loadPreviousMessages() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
 
-
+  try {
+    const res = await fetch(`${BASE_URL}/messages/load`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user.user_id })
+    });
+    const data = await res.json();
+    if (data.messages) {
+      data.messages.forEach(msg => {
+        const sender = msg.sender_id === user.user_id ? "user" : "ai";
+        addMessage(msg.message, sender);
+      });
+    }
+  } catch (err) {
+    console.error("⚠️ Could not load previous messages.", err);
+  }
+}
 
 
 
