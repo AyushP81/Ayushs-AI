@@ -109,37 +109,20 @@ function logout() {
 // ========================
 // PROFILE BAR
 // ========================
-function createProfileBar() {
-  if (document.getElementById("profile")) return; // already exists
-
-  const container = document.getElementById("main-content");
-  const profileBar = document.createElement("div");
-  profileBar.id = "profile";
-  profileBar.style.display = "flex";
-  profileBar.style.justifyContent = "space-between";
-  profileBar.style.alignItems = "center";
-  profileBar.style.width = "100%";
-  profileBar.style.marginBottom = "10px";
-
-  const userText = document.createElement("span");
-  userText.id = "profile-username";
-  profileBar.appendChild(userText);
-
-  const logoutBtn = document.createElement("button");
-  logoutBtn.textContent = "Logout";
-  logoutBtn.id = "logout-btn";
-  logoutBtn.onclick = logout;
-  profileBar.appendChild(logoutBtn);
-
-  container.prepend(profileBar);
+function setupProfileBar() {
+  const logoutBtn = document.getElementById("logout-btn");
+  logoutBtn.onclick = logout; // attach logout handler once
 }
 
 function updateProfileBar() {
-  createProfileBar();
   const user = JSON.parse(localStorage.getItem("user"));
   if (!user) return;
-  document.getElementById("profile-username").textContent = `Logged in as: ${user.username}`;
+  const userText = document.getElementById("profile-username");
+  userText.textContent = `Logged in as: ${user.username}`;
 }
+
+// Call this once after page load
+setupProfileBar();
 
 function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
@@ -264,6 +247,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
