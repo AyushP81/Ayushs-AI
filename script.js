@@ -91,12 +91,24 @@ async function loadPreviousMessages(userId) {
 
 
 // === LOGIN & PROFILE ===
-function loginUser(username, userId = null) {
+let currentUser = null;
+let currentUserId = null;
+
+function loginUser(username, user_id) {
   currentUser = username;
-  localStorage.setItem("user", JSON.stringify({ username, userId }));
+  currentUserId = user_id;
+
+  // Store in localStorage so page reloads keep user logged in
+  localStorage.setItem("user", JSON.stringify({ username, user_id }));
+
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
   showMainContent();
-  updateProfileBar();
+  showProfile();
+  loadPreviousMessages();
+  // load old messages from DB
 }
+
 
 function showMainContent() {
   document.getElementById("auth-container").style.display = "none";
@@ -155,7 +167,7 @@ function updateProfileBar() {
   }
   document.getElementById("profile-username").textContent = `Logged in as: ${user.username}`;
 }
-loadPreviousMessages();
+
 
 function logout() {
   currentUser = null;
@@ -263,6 +275,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
