@@ -144,6 +144,11 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
+  // Disable input and send button
+  userInput.disabled = true;
+  document.getElementById("send-btn").disabled = true;
+
+  // Show typing indicator
   const typingMsg = addMessage("...", "ai", true);
 
   try {
@@ -151,29 +156,42 @@ async function sendMessage() {
     if (!user) {
       chatBox.removeChild(typingMsg);
       showTypingEffect("⚠️ Error: You are not logged in.");
+      userInput.disabled = false;
+      document.getElementById("send-btn").disabled = false;
       return;
     }
 
     let reply;
+    // Intercept AI origin question
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
       const res = await fetch(`${BASE_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, user_id: user.user_id })
+        body: JSON.stringify({ 
+          message, 
+          user_id: user.user_id
+        })
       });
       const data = await res.json();
       reply = data.reply || "⚠️ Error: No response from AI.";
     }
 
     chatBox.removeChild(typingMsg);
-    showTypingEffect(reply);
+    await showTypingEffect(reply); // wait for typing effect to finish
+
   } catch (err) {
     chatBox.removeChild(typingMsg);
     showTypingEffect("⚠️ Error: Could not connect to backend.");
+  } finally {
+    // Re-enable input and send button
+    userInput.disabled = false;
+    document.getElementById("send-btn").disabled = false;
+    userInput.focus();
   }
 }
+
 
 function addMessage(text, sender, isTyping = false) {
   const msg = document.createElement("div");
@@ -186,42 +204,49 @@ function addMessage(text, sender, isTyping = false) {
 }
 
 function showTypingEffect(fullText) {
-  const msg = document.createElement("div");
-  msg.classList.add("message", "ai");
+  return new Promise((resolve) => {
+    const msg = document.createElement("div");
+    msg.classList.add("message", "ai");
 
-  const textContainer = document.createElement("span");
-  msg.appendChild(textContainer);
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+    const textContainer = document.createElement("span");
+    msg.appendChild(textContainer);
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-  let index = 0;
-  const typingSpeed = 20;
+    let index = 0;
+    const typingSpeed = 20;
 
-  function type() {
-    if (index < fullText.length) {
-      textContainer.textContent += fullText.charAt(index++);
-      chatBox.scrollTop = chatBox.scrollHeight;
-      setTimeout(type, typingSpeed);
-    } else if (fullText.length > 400) {
-      const shortText = fullText.slice(0, 400) + "...";
-      textContainer.textContent = shortText;
+    function type() {
+      if (index < fullText.length) {
+        textContainer.textContent += fullText.charAt(index++);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        setTimeout(type, typingSpeed);
+      } else {
+        // Handle Read More if text is long
+        if (fullText.length > 400) {
+          const shortText = fullText.slice(0, 400) + "...";
+          textContainer.textContent = shortText;
 
-      const readMore = document.createElement("button");
-      readMore.textContent = "Read More";
-      readMore.classList.add("read-more");
+          const readMore = document.createElement("button");
+          readMore.textContent = "Read More";
+          readMore.classList.add("read-more");
 
-      let expanded = false;
-      readMore.onclick = () => {
-        textContainer.textContent = expanded ? shortText : fullText;
-        readMore.textContent = expanded ? "Read More" : "Collapse";
-        expanded = !expanded;
-      };
+          let expanded = false;
+          readMore.onclick = () => {
+            textContainer.textContent = expanded ? shortText : fullText;
+            readMore.textContent = expanded ? "Read More" : "Collapse";
+            expanded = !expanded;
+          };
 
-      msg.appendChild(readMore);
+          msg.appendChild(readMore);
+        }
+        resolve(); // typing finished
+      }
     }
-  }
-  type();
+    type();
+  });
 }
+
 
 // ========================
 // LOAD PREVIOUS MESSAGES
@@ -247,6 +272,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
