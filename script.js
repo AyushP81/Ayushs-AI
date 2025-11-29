@@ -149,31 +149,43 @@ document.getElementById("send-btn").addEventListener("click", sendMessage);
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
+
   addMessage(message, "user");
   userInput.value = "";
 
   const typingMsg = addMessage("...", "ai", true);
 
   try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const user_id = user ? user.user_id : null;
+
+    if (!user_id) {
+      chatBox.removeChild(typingMsg);
+      return showTypingEffect("⚠️ Error: You must be logged in to chat.");
+    }
+
     let reply;
     if (/who.*created.*you|who.*made.*you/i.test(message)) {
       reply = "I was created by Ayush.";
     } else {
-      const res = await fetch(`${BASE_URL}/chat`, {
+      const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message, user_id })
       });
       const data = await res.json();
       reply = data.reply || "⚠️ Error: No response from AI.";
     }
+
     chatBox.removeChild(typingMsg);
     showTypingEffect(reply);
+
   } catch (err) {
     chatBox.removeChild(typingMsg);
     showTypingEffect("⚠️ Error: Could not connect to backend.");
   }
 }
+
 
 function addMessage(text, sender, isTyping = false) {
   const msg = document.createElement("div");
@@ -223,6 +235,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
