@@ -73,7 +73,7 @@ async function login() {
 
 async function loadPreviousMessages(userId) {
   try {
-    const res = await fetch("/messages/history", {
+    const res = await fetch(`${BASE_URL/messages/history`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ user1: userId, user2: "ai" })
@@ -120,7 +120,7 @@ async function loadPreviousMessages() {
   if (!user) return;
 
   try {
-    const res = await fetch("/messages/load", {
+    const res = await fetch(`$BASE_URL/messages/load`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.user_id })
@@ -275,6 +275,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
