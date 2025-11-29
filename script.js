@@ -103,6 +103,29 @@ function showMainContent() {
   document.getElementById("main-content").style.display = "block";
   showProfile();
 }
+async function loadPreviousMessages() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
+
+  try {
+    const res = await fetch("/messages/load", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user.user_id })
+    });
+    const data = await res.json();
+    if (data.messages) {
+      data.messages.forEach(msg => {
+        // Determine if user or AI
+        const sender = msg.sender_id === user.user_id ? "user" : "ai";
+        addMessage(msg.message, sender);
+      });
+    }
+  } catch (err) {
+    console.log("⚠️ Could not load previous messages.", err);
+  }
+}
+
 
 function updateProfileBar() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -132,6 +155,7 @@ function updateProfileBar() {
   }
   document.getElementById("profile-username").textContent = `Logged in as: ${user.username}`;
 }
+loadPreviousMessages();
 
 function logout() {
   currentUser = null;
@@ -235,6 +259,7 @@ function showTypingEffect(fullText) {
   }
   type();
 }
+
 
 
 
