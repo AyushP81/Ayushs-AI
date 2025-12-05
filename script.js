@@ -14,6 +14,12 @@ let currentUserId = null;
 // INTRO SCREEN
 // ========================
 window.addEventListener("load", () => {
+  fetch("/welcome-message")
+        .then(res => res.json())
+        .then(data => {
+            if (data.welcome) {
+                addMessage(data.welcome, "ai"); // show as AI bubble
+            }
   const intro = document.getElementById("intro");
   setTimeout(() => {
     intro.style.opacity = "0";
@@ -272,6 +278,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
