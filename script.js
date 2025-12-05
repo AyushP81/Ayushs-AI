@@ -19,7 +19,6 @@ window.addEventListener("load", () => {
     intro.style.opacity = "0";
     setTimeout(() => {
       intro.style.display = "none";
-
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         currentUser = user.username;
@@ -272,6 +271,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
