@@ -15,23 +15,40 @@ let currentUserId = null;
 // ========================
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro");
+
   setTimeout(() => {
     intro.style.opacity = "0";
+
     setTimeout(() => {
       intro.style.display = "none";
+
       const user = JSON.parse(localStorage.getItem("user"));
+
       if (user) {
         currentUser = user.username;
         currentUserId = user.user_id;
+
         showMainContent();
         updateProfileBar();
         loadPreviousMessages();
+
+        // 🔥 NEW: Auto welcome message after login
+        fetch("/welcome-message")
+          .then(res => res.json())
+          .then(data => {
+            if (data.welcome) {
+              addMessage(data.welcome, "ai");
+            }
+          });
+
       } else {
         document.getElementById("auth-container").style.display = "flex";
       }
+
     }, 1000);
   }, 1500);
 });
+
 
 // ========================
 // AUTH SYSTEM
@@ -271,6 +288,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
