@@ -100,6 +100,14 @@ async function login() {
 }
 
 function loginUser(username, user_id) {
+  fetch("/welcome-message")
+  .then(res => res.json())
+  .then(data => {
+    if (data.welcome) {
+      showTypingEffect(data.welcome);
+    }
+  });
+
   currentUser = username;
   currentUserId = user_id;
 
@@ -288,6 +296,7 @@ async function loadPreviousMessages() {
     console.error("⚠️ Could not load previous messages.", err);
   }
 }
+
 
 
 
